@@ -1,0 +1,383 @@
+"use client";
+
+import { useState } from "react";
+import AuthInput from "@/components/AuthInput";
+import GoogleSignInButton from "@/components/GoogleSignInButton";
+import CustomDropdown from "@/components/CustomDropdown";
+import { sendOTP, signup, googleSignUp } from "@/services/auth";
+
+const BRANCHES = [
+  { value: "CSE", label: "Computer Science & Engineering" },
+  { value: "CSE AI ML", label: "CSE - AI & Machine Learning" },
+  { value: "IT", label: "Information Technology" },
+  { value: "EE", label: "Electrical Engineering" },
+  { value: "EEE", label: "Electronics & Electrical Engineering" },
+  { value: "ME", label: "Mechanical Engineering" },
+  { value: "CE", label: "Civil Engineering" },
+  { value: "CHE", label: "Chemical Engineering" },
+  { value: "PE", label: "Production Engineering" },
+  { value: "Biomed", label: "Biomedical Engineering" },
+  { value: "Fire Safety", label: "Fire Safety Engineering" },
+  { value: "Smart Manufacturing", label: "Smart Manufacturing" },
+  { value: "MSc", label: "Master of Science" },
+  { value: "MTech", label: "Master of Technology" },
+  { value: "Others", label: "Others" },
+];
+
+const YEARS = [
+  { value: "2029", label: "2029" },
+  { value: "2028", label: "2028" },
+  { value: "2027", label: "2027" },
+  { value: "2026", label: "2026" },
+];
+
+export default function SignupPage() {
+  const [step, setStep] = useState<number>(1);
+  const [loading, setLoading] = useState(false);
+
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    institution: "vssut", // vssut / non_vssut
+    gradYear: YEARS[0].value,
+    branch: BRANCHES[0].value,
+    otp: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    otp: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  // helpers
+  const isValidEmail = (email: string) =>
+    /^\S+@\S+\.\S+$/.test(email.toLowerCase());
+
+  const isValidPhone = (phone: string) => /^\d{10}$/.test(phone.replace(/\s+/g, ""));
+
+  const validateStep1 = () => {
+    const errs = { name: "", email: "", phone: "" };
+    let ok = true;
+    if (!form.name.trim()) {
+      errs.name = "Please enter your name";
+      ok = false;
+    }
+    if (!isValidEmail(form.email)) {
+      errs.email = "Please enter a valid email";
+      ok = false;
+    }
+    if (!isValidPhone(form.phone)) {
+      errs.phone = "Phone number should be 10 digits";
+      ok = false;
+    }
+    setErrors((prev) => ({ ...prev, ...errs }));
+    return ok;
+  };
+
+  const validateStep2 = () => {
+    const errs = { otp: "", password: "", confirmPassword: "" };
+    let ok = true;
+    if (!form.otp.trim()) {
+      errs.otp = "OTP is required";
+      ok = false;
+    }
+    if (form.password.length < 6) {
+      errs.password = "Password should be at least 6 characters";
+      ok = false;
+    }
+    if (form.password !== form.confirmPassword) {
+      errs.confirmPassword = "Passwords do not match";
+      ok = false;
+    }
+    setErrors((prev) => ({ ...prev, ...errs }));
+    return ok;
+  };
+
+  const handleSendOTP = async () => {
+    if (!validateStep1()) return;
+    setLoading(true);
+    try {
+      await sendOTP({ email: form.email });
+      setStep(2);
+      alert("OTP sent to your email. Please check and continue.");
+    } catch (err: any) {
+      alert(err?.response?.data?.message || "Failed to send OTP");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSignup = async () => {
+    if (!validateStep2()) return;
+    setLoading(true);
+    try {
+      const payload = {
+        name: form.name,
+        email: form.email,
+        password: form.password,
+        otp: form.otp,
+        phone: form.phone,
+        institution: form.institution,
+        gradYear: form.gradYear,
+        branch: form.branch,
+      };
+      await signup(payload);
+      alert("Signup successful! Please login.");
+      // Optionally redirect to login or homepage
+      setStep(1);
+      setForm({
+        name: "",
+        email: "",
+        phone: "",
+        institution: "vssut",
+        gradYear: YEARS[0].value,
+        branch: BRANCHES[0].value,
+        otp: "",
+        password: "",
+        confirmPassword: "",
+      });
+    } catch (err: any) {
+      alert(err?.response?.data?.message || "Signup failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (credential: string) => {
+    setLoading(true);
+    try {
+      const payload = {
+        credential,
+        phone: form.phone,
+        institution: form.institution,
+        gradYear: form.gradYear,
+        branch: form.branch,
+      };
+      await googleSignUp(payload);
+      alert("Google Sign-Up successful! Please login.");
+      // Reset form and redirect
+      setStep(1);
+      setForm({
+        name: "",
+        email: "",
+        phone: "",
+        institution: "vssut",
+        gradYear: YEARS[0].value,
+        branch: BRANCHES[0].value,
+        otp: "",
+        password: "",
+        confirmPassword: "",
+      });
+    } catch (err: any) {
+      alert(err?.response?.data?.message || "Google Sign-Up failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleError = (error: string) => {
+    alert(error);
+  };
+
+  return (
+  <div className="min-h-screen bg-gray-50 flex justify-center px-4 py-10">
+    <div className="w-full max-w-2xl">
+      {/* Top stepper and title */}
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex space-x-3">
+          {[1, 2].map((s) => (
+            <button
+              key={s}
+              type="button"
+              className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold border transition-colors
+              ${step >= s ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-gray-600 border-gray-300'}`}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+        <span className="text-sm text-gray-500">Step {step} of 2</span>
+      </div>
+
+      <h2 className="text-3xl font-bold text-center text-gray-900">Signup</h2>
+      <p className="text-sm text-center text-gray-500 mb-10">Create your account</p>
+
+      {step === 1 && (
+        <div className="space-y-6">
+          {/* Google Sign-Up */}
+          <GoogleSignInButton
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+            disabled={loading}
+            text="Sign up with Google"
+          />
+
+          {/* Divider */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-gray-50 text-gray-500">Or continue with email</span>
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+            <AuthInput
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              placeholder="Enter your name"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+            />
+            {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <AuthInput
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              placeholder="you@email.com"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+            />
+            {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+            <AuthInput
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              placeholder="10 digits"
+              value={form.phone}
+              onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            />
+            {errors.phone && <p className="mt-1 text-xs text-red-500">{errors.phone}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Institution</label>
+            <div className="flex gap-3">
+              {[
+                { value: 'vssut', label: 'VSSUT' },
+                { value: 'non_vssut', label: 'Non-VSSUT' },
+              ].map((inst) => (
+                <label
+                  key={inst.value}
+                  className={`flex items-center px-4 py-3 rounded-lg border cursor-pointer text-sm font-medium transition-colors
+                  ${form.institution === inst.value
+                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                    : 'border-gray-300 hover:border-gray-400 text-gray-700'}`}
+                >
+                  <input
+                    type="radio"
+                    name="institution"
+                    value={inst.value}
+                    checked={form.institution === inst.value}
+                    onChange={(e) => setForm({ ...form, institution: e.target.value })}
+                    className="mr-2"
+                  />
+                  {inst.label}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Graduation Year</label>
+            <CustomDropdown
+              options={YEARS}
+              value={form.gradYear}
+              onChange={(value) => setForm({ ...form, gradYear: value })}
+              placeholder="Select graduation year"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Branch</label>
+            <CustomDropdown
+              options={BRANCHES}
+              value={form.branch}
+              onChange={(value) => setForm({ ...form, branch: value })}
+              placeholder="Select your branch"
+            />
+          </div>
+
+          <button
+            onClick={handleSendOTP}
+            disabled={loading}
+            className="w-full py-3 mt-4 rounded-lg bg-emerald-600 text-white font-semibold hover:bg-emerald-700 disabled:bg-emerald-300 transition-colors shadow-sm"
+          >
+            {loading ? 'Sending...' : 'Send OTP'}
+          </button>
+        </div>
+      )}
+
+      {step === 2 && (
+        <div className="space-y-6 mt-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">OTP</label>
+            <AuthInput
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-center tracking-widest focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              placeholder="6 digits"
+              value={form.otp}
+              onChange={(e) => setForm({ ...form, otp: e.target.value })}
+            />
+            {errors.otp && <p className="mt-1 text-xs text-red-500">{errors.otp}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <AuthInput
+              type="password"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              placeholder="Enter password"
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+            />
+            {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+            <AuthInput
+              type="password"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              placeholder="Repeat password"
+              value={form.confirmPassword}
+              onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
+            />
+            {errors.confirmPassword && <p className="mt-1 text-xs text-red-500">{errors.confirmPassword}</p>}
+          </div>
+
+          <div className="flex gap-4">
+            <button
+              type="button"
+              onClick={() => setStep(1)}
+              className="flex-1 py-3 border border-gray-300 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50"
+            >
+              Back
+            </button>
+            <button
+              onClick={handleSignup}
+              disabled={loading}
+              className="flex-1 py-3 rounded-lg bg-emerald-600 text-white font-semibold hover:bg-emerald-700 disabled:bg-emerald-300 text-sm shadow-sm"
+            >
+              {loading ? 'Signing up...' : 'Complete Signup'}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+);
+
+
+
+}
