@@ -1,25 +1,24 @@
-
 import Link from "next/link";
 import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="bg-black px-6 py-24">
+    <footer className="bg-black px-6 py-12">
       <div className="mx-auto max-w-7xl">
 
         
-        <div className="rounded-3xl bg-gradient-to-br from-[#0b1022] via-[#070b18] to-[#040611] px-10 py-16 shadow-2xl">
+        <div className="rounded-3xl bg-gradient-to-br from-[#0b1022] via-[#070b18] to-[#040611] px-8 py-10 shadow-2xl">
 
           
-          <div className="grid gap-16 lg:grid-cols-2 items-start">
+          <div className="grid gap-10 lg:grid-cols-2 items-start">
 
             
             <div>
               <Image
-                src="/logo.svg"
+                src="/logo.jpg"
                 alt="Samavesh X Vassaunt Logo"
-                width={80}
-                height={80}
+                width={200}
+                height={200}
                 className="mb-6"
                 priority
               />
@@ -92,9 +91,9 @@ export default function Footer() {
           </div>
 
           
-          <div className="mt-16 h-px bg-white/10" />
+          <div className="mt-10 h-px bg-white/10" />
 
-          
+      
           <p className="mt-6 text-center text-xs text-zinc-500">
             © 2025. All Rights Reserved
           </p>
