@@ -51,12 +51,12 @@ export default function CustomDropdown({
         type="button"
         onClick={() => !disabled && setIsOpen(!isOpen)}
         disabled={disabled}
-        className={`w-full px-4 py-3 text-left bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors ${
+        className={`w-full px-4 py-3 text-left bg-black border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors ${
           disabled ? 'bg-gray-100 cursor-not-allowed' : 'hover:border-gray-400 cursor-pointer'
         }`}
       >
         <div className="flex items-center justify-between">
-          <span className={`text-sm ${selectedOption ? 'text-gray-900' : 'text-gray-500'}`}>
+          <span className={`text-sm ${selectedOption ? 'text-white' : 'text-gray-500'}`}>
             {selectedOption ? selectedOption.label : placeholder}
           </span>
           <svg

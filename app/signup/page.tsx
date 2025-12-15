@@ -5,6 +5,47 @@ import AuthInput from "@/components/AuthInput";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
 import CustomDropdown from "@/components/CustomDropdown";
 import { sendOTP, signup, googleSignUp } from "@/services/auth";
+import Link from "next/link";
+import { TextField, InputAdornment, IconButton } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import {
+  Prata,
+  Abril_Fatface,
+  Domine,
+  Roboto_Slab,
+  Cormorant_Garamond,
+} from "next/font/google";
+
+const prata = Prata({
+  subsets: ["latin"],
+  weight: ["400"],
+  fallback: ["serif"],
+});
+
+const af = Abril_Fatface({
+  subsets: ["latin"],
+  weight: ["400"],
+  fallback: ["mono"],
+});
+
+const i_serif = Roboto_Slab({
+  subsets: ["latin"],
+  weight: ["400"],
+  fallback: ["sans-serif"],
+});
+
+const domine = Domine({
+  subsets: ["latin"],
+  weight: ["400"],
+  fallback: ["serif"],
+});
+
+const cd = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["400"],
+  fallback: ["serif"],
+  variable: "--font-cormorant-garamond",
+});
 
 const BRANCHES = [
   { value: "CSE", label: "Computer Science & Engineering" },
@@ -34,6 +75,8 @@ const YEARS = [
 export default function SignupPage() {
   const [step, setStep] = useState<number>(1);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -60,7 +103,8 @@ export default function SignupPage() {
   const isValidEmail = (email: string) =>
     /^\S+@\S+\.\S+$/.test(email.toLowerCase());
 
-  const isValidPhone = (phone: string) => /^\d{10}$/.test(phone.replace(/\s+/g, ""));
+  const isValidPhone = (phone: string) =>
+    /^\d{10}$/.test(phone.replace(/\s+/g, ""));
 
   const validateStep1 = () => {
     const errs = { name: "", email: "", phone: "" };
@@ -187,197 +231,429 @@ export default function SignupPage() {
   };
 
   return (
-  <div className="min-h-screen bg-gray-50 flex justify-center px-4 py-10">
-    <div className="w-full max-w-2xl">
-      {/* Top stepper and title */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex space-x-3">
-          {[1, 2].map((s) => (
-            <button
-              key={s}
-              type="button"
-              className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold border transition-colors
-              ${step >= s ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-gray-600 border-gray-300'}`}
-            >
-              {s}
-            </button>
-          ))}
+    <div className="min-h-screen bg-black flex justify-center px-4 py-10">
+      <div className="w-full max-w-xl">
+        {/* Top stepper and title */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex space-x-3">
+            {[1, 2].map((s) => (
+              <button
+                key={s}
+                type="button"
+                className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold border transition-colors
+              ${
+                step >= s
+                  ? "bg-emerald-600 text-white border-emerald-600"
+                  : "bg-white text-gray-600 border-gray-300"
+              }`}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+          <span className="text-sm text-gray-500">Step {step} of 2</span>
         </div>
-        <span className="text-sm text-gray-500">Step {step} of 2</span>
-      </div>
-
-      <h2 className="text-3xl font-bold text-center text-gray-900">Signup</h2>
-      <p className="text-sm text-center text-gray-500 mb-10">Create your account</p>
-
-      {step === 1 && (
-        <div className="space-y-6">
-          {/* Google Sign-Up */}
-          <GoogleSignInButton
-            onSuccess={handleGoogleSuccess}
-            onError={handleGoogleError}
-            disabled={loading}
-            text="Sign up with Google"
-          />
-
-          {/* Divider */}
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-gray-50 text-gray-500">Or continue with email</span>
-            </div>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-            <AuthInput
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              placeholder="Enter your name"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-            />
-            {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <AuthInput
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              placeholder="you@email.com"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-            />
-            {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-            <AuthInput
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              placeholder="10 digits"
-              value={form.phone}
-              onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            />
-            {errors.phone && <p className="mt-1 text-xs text-red-500">{errors.phone}</p>}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Institution</label>
-            <div className="flex gap-3">
-              {[
-                { value: 'vssut', label: 'VSSUT' },
-                { value: 'non_vssut', label: 'Non-VSSUT' },
-              ].map((inst) => (
-                <label
-                  key={inst.value}
-                  className={`flex items-center px-4 py-3 rounded-lg border cursor-pointer text-sm font-medium transition-colors
-                  ${form.institution === inst.value
-                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
-                    : 'border-gray-300 hover:border-gray-400 text-gray-700'}`}
-                >
-                  <input
-                    type="radio"
-                    name="institution"
-                    value={inst.value}
-                    checked={form.institution === inst.value}
-                    onChange={(e) => setForm({ ...form, institution: e.target.value })}
-                    className="mr-2"
-                  />
-                  {inst.label}
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Graduation Year</label>
-            <CustomDropdown
-              options={YEARS}
-              value={form.gradYear}
-              onChange={(value) => setForm({ ...form, gradYear: value })}
-              placeholder="Select graduation year"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Branch</label>
-            <CustomDropdown
-              options={BRANCHES}
-              value={form.branch}
-              onChange={(value) => setForm({ ...form, branch: value })}
-              placeholder="Select your branch"
-            />
-          </div>
-
-          <button
-            onClick={handleSendOTP}
-            disabled={loading}
-            className="w-full py-3 mt-4 rounded-lg bg-emerald-600 text-white font-semibold hover:bg-emerald-700 disabled:bg-emerald-300 transition-colors shadow-sm"
+        <fieldset className="pb-8 px-[20px] md:px-8 pt-3 border-2 border-gray-500 rounded-2xl max-md:mx-[6.5px]">
+          <legend
+            className={`text-3xl font-bold ${prata.className} text-center text-white`}
           >
-            {loading ? 'Sending...' : 'Send OTP'}
-          </button>
-        </div>
-      )}
+            Signup
+          </legend>
+          <p
+            className={`text-lg text-center ${af.className} text-gray-100 mb-5`}
+          >
+            Create your account
+          </p>
 
-      {step === 2 && (
-        <div className="space-y-6 mt-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">OTP</label>
-            <AuthInput
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-center tracking-widest focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              placeholder="6 digits"
-              value={form.otp}
-              onChange={(e) => setForm({ ...form, otp: e.target.value })}
-            />
-            {errors.otp && <p className="mt-1 text-xs text-red-500">{errors.otp}</p>}
-          </div>
+          {step === 1 && (
+            <div className="space-y-6">
+              {/* Google Sign-Up */}
+              <GoogleSignInButton
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleError}
+                disabled={loading}
+                text="Sign up with Google"
+              />
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <AuthInput
-              type="password"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              placeholder="Enter password"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-            />
-            {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password}</p>}
-          </div>
+              {/* Divider */}
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-300" />
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span
+                    className={`px-[6.5px] ${i_serif.className} bg-black text-gray-200`}
+                  >
+                    Or continue with email
+                  </span>
+                </div>
+              </div>
+              <div>
+                <TextField
+                  label="Name*"
+                  id="name"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  sx={{
+                    width: "100%",
+                    "& .MuiOutlinedInput-root": {
+                      backgroundColor: "black",
+                      borderRadius: "0.5rem",
+                      "& fieldset": {
+                        borderColor: "#6b7280",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#6b7280",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "white",
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "#d1d5db",
+                    },
+                    "& .MuiOutlinedInput-root.Mui-focused .MuiInputLabel-root":
+                      {
+                        color: "gray.300",
+                      },
+                    "& .MuiOutlinedInput-input": {
+                      color: "#d1d5db",
+                    },
+                    "& .MuiOutlinedInput-input::placeholder": {
+                      color: "#d1d5db",
+                      opacity: 1,
+                    },
+                  }}
+                />
+                {errors.name && (
+                  <p className="mt-1 text-xs text-red-500">{errors.name}</p>
+                )}
+              </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
-            <AuthInput
-              type="password"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              placeholder="Repeat password"
-              value={form.confirmPassword}
-              onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
-            />
-            {errors.confirmPassword && <p className="mt-1 text-xs text-red-500">{errors.confirmPassword}</p>}
-          </div>
+              <div>
+                <TextField
+                  label="Email*"
+                  id="email"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  sx={{
+                    width: "100%",
+                    "& .MuiOutlinedInput-root": {
+                      backgroundColor: "black",
+                      borderRadius: "0.5rem",
+                      "& fieldset": {
+                        borderColor: "#6b7280",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#6b7280",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "white",
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "#d1d5db",
+                    },
+                    "& .MuiOutlinedInput-root.Mui-focused .MuiInputLabel-root":
+                      {
+                        color: "gray.300",
+                      },
+                    "& .MuiOutlinedInput-input": {
+                      color: "#d1d5db",
+                    },
+                    "& .MuiOutlinedInput-input::placeholder": {
+                      color: "#d1d5db",
+                      opacity: 1,
+                    },
+                  }}
+                />
+                {errors.email && (
+                  <p className="mt-1 text-xs text-red-500">{errors.email}</p>
+                )}
+              </div>
 
-          <div className="flex gap-4">
-            <button
-              type="button"
-              onClick={() => setStep(1)}
-              className="flex-1 py-3 border border-gray-300 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50"
-            >
-              Back
-            </button>
-            <button
-              onClick={handleSignup}
-              disabled={loading}
-              className="flex-1 py-3 rounded-lg bg-emerald-600 text-white font-semibold hover:bg-emerald-700 disabled:bg-emerald-300 text-sm shadow-sm"
-            >
-              {loading ? 'Signing up...' : 'Complete Signup'}
-            </button>
-          </div>
-        </div>
-      )}
+              <div>
+                <TextField
+                  label="Phone*"
+                  id="phone"
+                  value={form.phone}
+                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                  sx={{
+                    width: "100%",
+                    "& .MuiOutlinedInput-root": {
+                      backgroundColor: "black",
+                      borderRadius: "0.5rem",
+                      "& fieldset": {
+                        borderColor: "#6b7280",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#6b7280",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "white",
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "#d1d5db",
+                    },
+                    "& .MuiOutlinedInput-root.Mui-focused .MuiInputLabel-root":
+                      {
+                        color: "gray.300",
+                      },
+                    "& .MuiOutlinedInput-input": {
+                      color: "#d1d5db",
+                    },
+                    "& .MuiOutlinedInput-input::placeholder": {
+                      color: "#d1d5db",
+                      opacity: 1,
+                    },
+                  }}
+                />
+                {errors.phone && (
+                  <p className="mt-1 text-xs text-red-500">{errors.phone}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-white mb-2">
+                  Institution
+                </label>
+                <div className="flex gap-3">
+                  {[
+                    { value: "vssut", label: "VSSUT" },
+                    { value: "non_vssut", label: "Non-VSSUT" },
+                  ].map((inst) => (
+                    <label
+                      key={inst.value}
+                      className={`flex items-center px-4 py-3 rounded-lg border cursor-pointer text-sm font-medium transition-colors
+                  ${
+                    form.institution === inst.value
+                      ? "border-emerald-500 bg-emerald-50 text-emerald-700"
+                      : "border-gray-300 hover:border-gray-400 text-white"
+                  }`}
+                    >
+                      <input
+                        type="radio"
+                        name="institution"
+                        value={inst.value}
+                        checked={form.institution === inst.value}
+                        onChange={(e) =>
+                          setForm({ ...form, institution: e.target.value })
+                        }
+                        className="mr-2"
+                      />
+                      {inst.label}
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-white mb-1">
+                  Graduation Year
+                </label>
+                <CustomDropdown
+                  options={YEARS}
+                  value={form.gradYear}
+                  onChange={(value) => setForm({ ...form, gradYear: value })}
+                  placeholder="Select graduation year"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-white mb-1">
+                  Branch
+                </label>
+                <CustomDropdown
+                  options={BRANCHES}
+                  value={form.branch}
+                  onChange={(value) => setForm({ ...form, branch: value })}
+                  placeholder="Select your branch"
+                />
+              </div>
+              <div className="flex justify-center gap-1 md:gap-[3px]">
+                <p className="text-[15.5px] max-md:text-[14.5px] text-white font-medium md:font-semibold cursor-default">
+                  Already Registered?{" "}
+                </p>
+                <Link
+                  href="/login"
+                  className="max-md:text-[14.5px] text-[15.5px] text-emerald-600 hover:text-emerald-700 hover:underline focus:text-emerald-700 focus:underline font-medium md:font-semibold"
+                >
+                  Login
+                </Link>
+              </div>
+              <button
+                onClick={handleSendOTP}
+                disabled={loading}
+                className="w-full py-3 mt-4 rounded-lg bg-emerald-600 text-white font-semibold hover:bg-emerald-700 disabled:bg-emerald-300 transition-colors shadow-sm"
+              >
+                {loading ? "Sending..." : "Send OTP"}
+              </button>
+            </div>
+          )}
+
+          {step === 2 && (
+            <div className="space-y-6 mt-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  OTP
+                </label>
+                <AuthInput
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-center tracking-widest focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  placeholder="6 digits"
+                  value={form.otp}
+                  onChange={(e) => setForm({ ...form, otp: e.target.value })}
+                />
+                {errors.otp && (
+                  <p className="mt-1 text-xs text-red-500">{errors.otp}</p>
+                )}
+              </div>
+
+              <div>
+                <TextField
+                  label="Password*"
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  value={form.password}
+                  onChange={(e) =>
+                    setForm({ ...form, password: e.target.value })
+                  }
+                  autoComplete="current-password"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowPassword(!showPassword)}
+                          edge="end"
+                          sx={{ color: "#d1d5db" }}
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                  sx={{
+                    width: "100%",
+                    "& .MuiOutlinedInput-root": {
+                      backgroundColor: "black",
+                      borderRadius: "0.5rem",
+                      "& fieldset": {
+                        borderColor: "#6b7280",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#6b7280",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "white",
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "#d1d5db",
+                    },
+                    "& .MuiOutlinedInput-root.Mui-focused .MuiInputLabel-root":
+                      {
+                        color: "gray.300",
+                      },
+                    "& .MuiOutlinedInput-input": {
+                      color: "#d1d5db",
+                    },
+                    "& .MuiOutlinedInput-input::placeholder": {
+                      color: "#d1d5db",
+                      opacity: 1,
+                    },
+                  }}
+                />
+                {errors.password && (
+                  <p className="mt-1 text-xs text-red-500">{errors.password}</p>
+                )}
+              </div>
+
+              <div>
+                <TextField
+                  label="Confirm Password*"
+                  id="currentpassword"
+                  name="currentpassword"
+                  type={showCurrentPassword ? "text" : "password"}
+                  value={form.confirmPassword}
+                  onChange={(e) =>
+                    setForm({ ...form, confirmPassword: e.target.value })
+                  }
+                  autoComplete="current-password"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowCurrentPassword(!showPassword)}
+                          edge="end"
+                          sx={{ color: "#d1d5db" }}
+                        >
+                          {showCurrentPassword ? (
+                            <VisibilityOff />
+                          ) : (
+                            <Visibility />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                  sx={{
+                    width: "100%",
+                    "& .MuiOutlinedInput-root": {
+                      backgroundColor: "black",
+                      borderRadius: "0.5rem",
+                      "& fieldset": {
+                        borderColor: "#6b7280",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#6b7280",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "white",
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "#d1d5db",
+                    },
+                    "& .MuiOutlinedInput-root.Mui-focused .MuiInputLabel-root":
+                      {
+                        color: "gray.300",
+                      },
+                    "& .MuiOutlinedInput-input": {
+                      color: "#d1d5db",
+                    },
+                    "& .MuiOutlinedInput-input::placeholder": {
+                      color: "#d1d5db",
+                      opacity: 1,
+                    },
+                  }}
+                />
+                {errors.confirmPassword && (
+                  <p className="mt-1 text-xs text-red-500">
+                    {errors.confirmPassword}
+                  </p>
+                )}
+              </div>
+              <div className="flex gap-4">
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="flex-1 py-3 border border-gray-300 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                >
+                  Back
+                </button>
+                <button
+                  onClick={handleSignup}
+                  disabled={loading}
+                  className="flex-1 py-3 rounded-lg bg-emerald-600 text-white font-semibold hover:bg-emerald-700 disabled:bg-emerald-300 text-sm shadow-sm"
+                >
+                  {loading ? "Signing up..." : "Complete Signup"}
+                </button>
+              </div>
+            </div>
+          )}
+        </fieldset>
+      </div>
     </div>
-  </div>
-);
-
-
-
+  );
 }
