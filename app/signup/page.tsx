@@ -247,7 +247,7 @@ export default function SignupPage() {
       setStep(2);
       alert("OTP sent to your email. Please check and continue.");
     } catch (err: any) {
-        alert(err.response?.data?.message || "Failed to send OTP"););
+        alert(err?.response?.data?.message || "Failed to send OTP");
     } finally {
       setLoading(false);
     }
@@ -311,7 +311,7 @@ export default function SignupPage() {
         confirmPassword: "",
       });
     } catch (error: any) {
-        alert(error.response?.data.message || "Signup failed");
+        alert(error?.response?.data.message || "Signup failed");
     } finally {
       setLoading(false);
     }
@@ -343,7 +343,7 @@ export default function SignupPage() {
         confirmPassword: "",
       });
     } catch (error: any) {
-        alert(error.response?.data?.message || "Google Sign-Up failed"););
+        alert(error?.response?.data?.message || "Google Sign-Up failed");
     } finally {
       setLoading(false);
     }

@@ -8,7 +8,7 @@ export const signup = (data: {
   password: string;
   otp: string;
   phone?: string;
-  institution?: "vssut" | "non_vssut";
+  institution?: string;
   gradYear?: string;
   branch?: string;
 }) => api.post("/api/auth/signup", data);
@@ -22,7 +22,7 @@ export const googleSignIn = (data: { credential: string }) =>
 export const googleSignUp = (data: { 
   credential: string; 
   phone?: string;
-  institution?: "vssut" | "non_vssut";
+  institution?: string;
   gradYear?: string;
   branch?: string;
 }) => api.post("/auth/google/signup", data);
