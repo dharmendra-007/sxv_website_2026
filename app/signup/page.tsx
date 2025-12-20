@@ -5,6 +5,8 @@ import AuthInput from "@/components/AuthInput";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
 import CustomDropdown from "@/components/CustomDropdown";
 import { sendOTP, signup, googleSignUp } from "@/services/auth";
+import SignupSchemaStep1 from "@/Schemas/SignupSchemaStep1";
+import SignupSchemaStep2 from "@/Schemas/signupSchemaStep2";
 import Link from "next/link";
 import { TextField, InputAdornment, IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
@@ -15,6 +17,7 @@ import {
   Roboto_Slab,
   Cormorant_Garamond,
 } from "next/font/google";
+import { motion, AnimatePresence } from "framer-motion";
 
 const prata = Prata({
   subsets: ["latin"],
@@ -32,12 +35,6 @@ const i_serif = Roboto_Slab({
   subsets: ["latin"],
   weight: ["400"],
   fallback: ["sans-serif"],
-});
-
-const domine = Domine({
-  subsets: ["latin"],
-  weight: ["400"],
-  fallback: ["serif"],
 });
 
 const cd = Cormorant_Garamond({
@@ -77,6 +74,18 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [nameError, setNameError] = useState<boolean | string>("");
+  const [nameErr, setNameErr] = useState<string>("");
+  const [emailError, setEmailError] = useState<boolean | string>("");
+  const [emailErr, setEmailErr] = useState<string>("");
+  const [confirmpasswordError, setConfirmPasswordError] = useState<
+    boolean | string
+  >("");
+  const [confirmpasswordErr, setconfirmpassworderr] = useState<string>("");
+  const [passwordError, setPasswordError] = useState<boolean | string>("");
+  const [passwordErr, setpassworderr] = useState<string>("");
+  const [phoneError, setPhoneError] = useState<boolean | string>("");
+  const [phoneErr, setPhoneErr] = useState<string>("");
 
   const [form, setForm] = useState({
     name: "",
@@ -144,22 +153,135 @@ export default function SignupPage() {
     return ok;
   };
 
+  const validatePassword = () => {
+    const Passwords: string = form.password.toString();
+    const res = SignupSchemaStep2.shape.password.safeParse(Passwords);
+    if (!res.success) {
+      setPasswordError(false);
+      setpassworderr(res.error.issues[0].message);
+    } else {
+      setPasswordError(true);
+    }
+  };
+
+  const validateConfirmPassword = () => {
+    const ConfirmPasswords: string = form.confirmPassword.toString();
+    const res =
+      SignupSchemaStep2.shape.confirmPassword.safeParse(ConfirmPasswords);
+    if (!res.success) {
+      setConfirmPasswordError(false);
+      setconfirmpassworderr(res.error.issues[0].message);
+    } else {
+      setConfirmPasswordError(true);
+    }
+    if (form.password != form.confirmPassword) {
+      setConfirmPasswordError(false);
+      setconfirmpassworderr("Passwords do not match.");
+    }
+  };
+
+  const validateEmail = () => {
+    const res = SignupSchemaStep1.shape.email.safeParse(form.email);
+    if (!res.success) {
+      setEmailError(false);
+      setEmailErr(res.error.issues[0].message);
+    } else {
+      setEmailError(true);
+    }
+  };
+
+  const validateName = () => {
+    const res = SignupSchemaStep1.shape.name.safeParse(form.name);
+    if (!res.success) {
+      setNameError(false);
+      setNameErr(res.error.issues[0].message);
+    } else {
+      setNameError(true);
+    }
+  };
+
+  const validatePhone = () => {
+    const res = SignupSchemaStep1.shape.phone.safeParse(form.phone);
+    if (!res.success) {
+      setPhoneError(false);
+      setPhoneErr(res.error.issues[0].message);
+    } else {
+      setPhoneError(true);
+    }
+  };
+
   const handleSendOTP = async () => {
-    if (!validateStep1()) return;
+    const res = SignupSchemaStep1.safeParse({
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+    });
+    if (!res.success) {
+      const emailInValid = res.error.issues.find(
+        (issue) => issue.path[0] === "email"
+      );
+      const nameInValid = res.error.issues.find(
+        (issue) => issue.path[0] === "name"
+      );
+      const phoneInValid = res.error.issues.find(
+        (issue) => issue.path[0] === "phone"
+      );
+      if (emailInValid) {
+        setEmailError(false);
+        setEmailErr(emailInValid.message);
+      }
+      if (nameInValid) {
+        setNameError(false);
+        setNameErr(nameInValid.message);
+      }
+      if (phoneInValid) {
+        setPhoneError(false);
+        setPhoneErr(phoneInValid.message);
+      }
+      return;
+    }
+
     setLoading(true);
     try {
       await sendOTP({ email: form.email });
       setStep(2);
       alert("OTP sent to your email. Please check and continue.");
     } catch (err: any) {
-      alert(err?.response?.data?.message || "Failed to send OTP");
+        alert(err?.response?.data?.message || "Failed to send OTP");
     } finally {
       setLoading(false);
     }
   };
 
   const handleSignup = async () => {
-    if (!validateStep2()) return;
+    const res = SignupSchemaStep2.safeParse({
+      password: form.password,
+      confirmPassword: form.confirmPassword,
+    });
+    if (!res.success) {
+      const passwordInValid = res.error.issues.find(
+        (issue) => issue.path[0] === "email"
+      );
+      const confirmPasswordInvalid = res.error.issues.find(
+        (issue) => issue.path[0] === "name"
+      );
+      if (passwordInValid) {
+        setPasswordError(false);
+        setpassworderr(passwordInValid.message);
+      }
+      if (confirmPasswordInvalid) {
+        setConfirmPasswordError(false);
+        setconfirmpassworderr(confirmPasswordInvalid.message);
+      }
+      return;
+    }
+
+    if (form.password !== form.confirmPassword) {
+      setConfirmPasswordError(false);
+      setconfirmpassworderr("Passwords do not match.");
+      return;
+    }
+
     setLoading(true);
     try {
       const payload = {
@@ -172,6 +294,7 @@ export default function SignupPage() {
         gradYear: form.gradYear,
         branch: form.branch,
       };
+
       await signup(payload);
       alert("Signup successful! Please login.");
       // Optionally redirect to login or homepage
@@ -187,8 +310,8 @@ export default function SignupPage() {
         password: "",
         confirmPassword: "",
       });
-    } catch (err: any) {
-      alert(err?.response?.data?.message || "Signup failed");
+    } catch (error: any) {
+        alert(error?.response?.data.message || "Signup failed");
     } finally {
       setLoading(false);
     }
@@ -219,8 +342,8 @@ export default function SignupPage() {
         password: "",
         confirmPassword: "",
       });
-    } catch (err: any) {
-      alert(err?.response?.data?.message || "Google Sign-Up failed");
+    } catch (error: any) {
+        alert(error?.response?.data?.message || "Google Sign-Up failed");
     } finally {
       setLoading(false);
     }
@@ -231,7 +354,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#E0E5EC] flex justify-center px-4 py-10 text-[#4A5568]">
+    <div className="min-h-screen bg-black flex justify-center px-4 py-10">
       <div className="w-full max-w-xl">
         {/* Top stepper and title */}
         <div className="flex items-center justify-between mb-8">
@@ -243,7 +366,7 @@ export default function SignupPage() {
                 className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold border transition-colors
               ${
                 step >= s
-                  ? "bg-blue-600 text-white border-blue-600"
+                  ? "bg-emerald-600 text-white border-emerald-600"
                   : "bg-white text-gray-600 border-gray-300"
               }`}
               >
@@ -251,245 +374,298 @@ export default function SignupPage() {
               </button>
             ))}
           </div>
-          <span className="text-sm text-gray-500">Step {step} of 2</span>
+          <span className="text-sm text-gray-500 cursor-default">
+            Step {step} of 2
+          </span>
         </div>
         <fieldset className="pb-8 px-[20px] md:px-8 pt-3 border-2 border-gray-500 rounded-2xl max-md:mx-[6.5px]">
           <legend
-            className={`text-3xl font-bold ${prata.className} text-center`}
+            className={`text-3xl font-bold ${prata.className} text-center cursor-default text-white`}
           >
             Signup
           </legend>
           <p
-            className={`text-lg text-center ${af.className} mb-5`}
+            className={`text-lg text-center ${af.className} cursor-default text-gray-100 mb-5`}
           >
             Create your account
           </p>
 
           {step === 1 && (
-            <div className="space-y-6">
-              {/* Google Sign-Up */}
-              <GoogleSignInButton
-                onSuccess={handleGoogleSuccess}
-                onError={handleGoogleError}
-                disabled={loading}
-                text="Sign up with Google"
-              />
+            <>
+              <div className="space-y-6">
+                {/* Google Sign-Up */}
+                <GoogleSignInButton
+                  onSuccess={handleGoogleSuccess}
+                  onError={handleGoogleError}
+                  disabled={loading}
+                  text="Sign up with Google"
+                />
 
-              {/* Divider */}
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-300" />
+                {/* Divider */}
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-300" />
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span
+                      className={`px-[6.5px] ${i_serif.className} cursor-default bg-black text-gray-200`}
+                    >
+                      Or continue with email
+                    </span>
+                  </div>
                 </div>
-                <div className="relative flex justify-center text-sm">
-                  <span
-                    className={`px-[6.5px] ${i_serif.className} bg-[#E0E5EC]`}
-                  >
-                    Or continue with email
-                  </span>
+                <div>
+                  <TextField
+                    label="Name*"
+                    id="name"
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    sx={{
+                      width: "100%",
+                      "& .MuiOutlinedInput-root": {
+                        backgroundColor: "black",
+                        borderRadius: "0.5rem",
+                        "& fieldset": {
+                          borderColor:
+                            nameError === false
+                              ? "red"
+                              : nameError === true
+                              ? "green"
+                              : "#6b7280",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#6b7280",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "white",
+                        },
+                      },
+                      "& .MuiInputLabel-root": {
+                        color: "#d1d5db",
+                      },
+                      "& .MuiOutlinedInput-root.Mui-focused .MuiInputLabel-root":
+                        {
+                          color: "gray.300",
+                        },
+                      "& .MuiOutlinedInput-input": {
+                        color: "#d1d5db",
+                      },
+                      "& .MuiOutlinedInput-input::placeholder": {
+                        color: "#d1d5db",
+                        opacity: 1,
+                      },
+                    }}
+                    onBlur={validateName}
+                  />
+                  <AnimatePresence>
+                    {!nameError && nameErr && (
+                      <motion.p
+                        initial={{ opacity: 0, y: -15 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ opacity: 0, y: -15 }}
+                        className="text-red-700 font-bold mt-2 cursor-default"
+                      >
+                        {nameErr}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
                 </div>
-              </div>
-              <div>
-                <TextField
-                  label="Name*"
-                  id="name"
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  sx={{
-                    width: "100%",
-                    "& .MuiOutlinedInput-root": {
-                      backgroundColor: "white",
-                      borderRadius: "0.5rem",
-                      "& fieldset": {
-                        borderColor: "#6b7280",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "#6b7280",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "white",
-                      },
-                    },
-                    "& .MuiInputLabel-root": {
-                      color: "#4A5568",
-                    },
-                    "& .MuiOutlinedInput-root.Mui-focused .MuiInputLabel-root":
-                      {
-                        color: "gray.300",
-                      },
-                    "& .MuiOutlinedInput-input": {
-                      color: "#4A5568",
-                    },
-                    "& .MuiOutlinedInput-input::placeholder": {
-                      color: "#4A5568",
-                      opacity: 1,
-                    },
-                  }}
-                />
-                {errors.name && (
-                  <p className="mt-1 text-xs text-red-500">{errors.name}</p>
-                )}
-              </div>
 
-              <div>
-                <TextField
-                  label="Email*"
-                  id="email"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  sx={{
-                    width: "100%",
-                    "& .MuiOutlinedInput-root": {
-                      backgroundColor: "white",
-                      borderRadius: "0.5rem",
-                      "& fieldset": {
-                        borderColor: "#6b7280",
+                <div>
+                  <TextField
+                    label="Email*"
+                    id="email"
+                    value={form.email}
+                    onChange={(e) =>
+                      setForm({ ...form, email: e.target.value })
+                    }
+                    sx={{
+                      width: "100%",
+                      "& .MuiOutlinedInput-root": {
+                        backgroundColor: "black",
+                        borderRadius: "0.5rem",
+                        "& fieldset": {
+                          borderColor:
+                            emailError === false
+                              ? "red"
+                              : emailError === true
+                              ? "green"
+                              : "#6b7280",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#6b7280",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "white",
+                        },
                       },
-                      "&:hover fieldset": {
-                        borderColor: "#6b7280",
+                      "& .MuiInputLabel-root": {
+                        color: "#d1d5db",
                       },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "white",
+                      "& .MuiOutlinedInput-root.Mui-focused .MuiInputLabel-root":
+                        {
+                          color: "gray.300",
+                        },
+                      "& .MuiOutlinedInput-input": {
+                        color: "#d1d5db",
                       },
-                    },
-                    "& .MuiInputLabel-root": {
-                      color: "#4A5568",
-                    },
-                    "& .MuiOutlinedInput-root.Mui-focused .MuiInputLabel-root":
-                      {
-                        color: "gray.300",
+                      "& .MuiOutlinedInput-input::placeholder": {
+                        color: "#d1d5db",
+                        opacity: 1,
                       },
-                    "& .MuiOutlinedInput-input": {
-                      color: "#4A5568",
-                    },
-                    "& .MuiOutlinedInput-input::placeholder": {
-                      color: "#4A5568",
-                      opacity: 1,
-                    },
-                  }}
-                />
-                {errors.email && (
-                  <p className="mt-1 text-xs text-red-500">{errors.email}</p>
-                )}
-              </div>
+                    }}
+                    onBlur={validateEmail}
+                  />
+                  <AnimatePresence>
+                    {!emailError && emailErr && (
+                      <motion.p
+                        initial={{ opacity: 0, y: -15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -15 }}
+                        className="text-red-700 font-bold mt-2 cursor-default"
+                      >
+                        {emailErr}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+                </div>
 
-              <div>
-                <TextField
-                  label="Phone*"
-                  id="phone"
-                  value={form.phone}
-                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  sx={{
-                    width: "100%",
-                    "& .MuiOutlinedInput-root": {
-                      backgroundColor: "white",
-                      borderRadius: "0.5rem",
-                      "& fieldset": {
-                        borderColor: "#6b7280",
+                <div>
+                  <TextField
+                    label="Phone*"
+                    id="phone"
+                    value={form.phone}
+                    onChange={(e) =>
+                      setForm({ ...form, phone: e.target.value })
+                    }
+                    sx={{
+                      width: "100%",
+                      "& .MuiOutlinedInput-root": {
+                        backgroundColor: "black",
+                        borderRadius: "0.5rem",
+                        "& fieldset": {
+                          borderColor:
+                            phoneError === false
+                              ? "red"
+                              : phoneError === true
+                              ? "green"
+                              : "#6b7280",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#6b7280",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "white",
+                        },
                       },
-                      "&:hover fieldset": {
-                        borderColor: "#6b7280",
+                      "& .MuiInputLabel-root": {
+                        color: "#d1d5db",
                       },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "white",
+                      "& .MuiOutlinedInput-root.Mui-focused .MuiInputLabel-root":
+                        {
+                          color: "gray.300",
+                        },
+                      "& .MuiOutlinedInput-input": {
+                        color: "#d1d5db",
                       },
-                    },
-                    "& .MuiInputLabel-root": {
-                      color: "#4A5568",
-                    },
-                    "& .MuiOutlinedInput-root.Mui-focused .MuiInputLabel-root":
-                      {
-                        color: "gray.300",
+                      "& .MuiOutlinedInput-input::placeholder": {
+                        color: "#d1d5db",
+                        opacity: 1,
                       },
-                    "& .MuiOutlinedInput-input": {
-                      color: "#4A5568",
-                    },
-                    "& .MuiOutlinedInput-input::placeholder": {
-                      color: "#4A5568",
-                      opacity: 1,
-                    },
-                  }}
-                />
-                {errors.phone && (
-                  <p className="mt-1 text-xs text-red-500">{errors.phone}</p>
-                )}
-              </div>
+                    }}
+                    onBlur={validatePhone}
+                  />
+                  <AnimatePresence>
+                    {!phoneError && phoneErr && (
+                      <motion.p
+                        initial={{ y: -15, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: -15, opacity: 0 }}
+                        className="text-red-700 font-bold mt-2 cursor-default"
+                      >
+                        {phoneErr}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Institution
-                </label>
-                <div className="flex gap-3">
-                  {[
-                    { value: "vssut", label: "VSSUT" },
-                    { value: "non_vssut", label: "Non-VSSUT" },
-                  ].map((inst) => (
-                    <label
-                      key={inst.value}
-                      className={`flex items-center px-4 py-3 rounded-lg border cursor-pointer text-sm font-medium transition-colors
+                <div>
+                  <label className="block text-sm font-medium text-white mb-2">
+                    Institution
+                  </label>
+                  <div className="flex gap-3">
+                    {[
+                      { value: "vssut", label: "VSSUT" },
+                      { value: "non_vssut", label: "Non-VSSUT" },
+                    ].map((inst) => (
+                      <label
+                        key={inst.value}
+                        className={`flex items-center px-4 py-3 rounded-lg border cursor-pointer text-sm font-medium transition-colors
                   ${
                     form.institution === inst.value
-                      ? "border-blue-500 bg-blue-50 text-blue-700"
-                      : "border-gray-300 hover:border-gray-400"
+                      ? "border-emerald-500 bg-emerald-50 text-emerald-700"
+                      : "border-gray-300 hover:border-gray-400 text-white"
                   }`}
-                    >
-                      <input
-                        type="radio"
-                        name="institution"
-                        value={inst.value}
-                        checked={form.institution === inst.value}
-                        onChange={(e) =>
-                          setForm({ ...form, institution: e.target.value })
-                        }
-                        className="mr-2"
-                      />
-                      {inst.label}
-                    </label>
-                  ))}
+                      >
+                        <input
+                          type="radio"
+                          name="institution"
+                          value={inst.value}
+                          checked={form.institution === inst.value}
+                          onChange={(e) =>
+                            setForm({ ...form, institution: e.target.value })
+                          }
+                          className="mr-2"
+                        />
+                        {inst.label}
+                      </label>
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Graduation Year
-                </label>
-                <CustomDropdown
-                  options={YEARS}
-                  value={form.gradYear}
-                  onChange={(value) => setForm({ ...form, gradYear: value })}
-                  placeholder="Select graduation year"
-                />
-              </div>
+                <div>
+                  <label className="block text-sm font-medium text-white mb-1">
+                    Graduation Year
+                  </label>
+                  <CustomDropdown
+                    options={YEARS}
+                    value={form.gradYear}
+                    onChange={(value) => setForm({ ...form, gradYear: value })}
+                    placeholder="Select graduation year"
+                  />
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Branch
-                </label>
-                <CustomDropdown
-                  options={BRANCHES}
-                  value={form.branch}
-                  onChange={(value) => setForm({ ...form, branch: value })}
-                  placeholder="Select your branch"
-                />
-              </div>
-              <div className="flex justify-center gap-1 md:gap-[3px]">
-                <p className="text-[15.5px] max-md:text-[14.5px] font-medium md:font-semibold cursor-default">
-                  Already Registered?{" "}
-                </p>
-                <Link
-                  href="/login"
-                  className="max-md:text-[14.5px] text-[15.5px] text-blue-600 hover:text-blue-700 hover:underline focus:text-blue-700 focus:underline font-medium md:font-semibold"
+                <div>
+                  <label className="block text-sm font-medium text-white mb-1">
+                    Branch
+                  </label>
+                  <CustomDropdown
+                    options={BRANCHES}
+                    value={form.branch}
+                    onChange={(value) => setForm({ ...form, branch: value })}
+                    placeholder="Select your branch"
+                  />
+                </div>
+                <div className="flex justify-center gap-1 md:gap-[3px]">
+                  <p className="text-[15.5px] max-md:text-[14.5px] text-white font-medium md:font-semibold cursor-default">
+                    Already Registered?{" "}
+                  </p>
+                  <Link
+                    href="/login"
+                    className="max-md:text-[14.5px] text-[15.5px] text-emerald-600 hover:text-emerald-700 hover:underline focus:text-emerald-700 focus:underline font-medium md:font-semibold"
+                  >
+                    Login
+                  </Link>
+                </div>
+                <button
+                  onMouseDown={handleSendOTP}
+                  disabled={loading}
+                  className="w-full py-3 mt-4 rounded-lg cursor-pointer bg-emerald-600 text-white font-semibold hover:bg-emerald-700 disabled:bg-emerald-300 transition-colors shadow-sm"
                 >
-                  Login
-                </Link>
+                  {loading ? "Sending..." : "Send OTP"}
+                </button>
               </div>
-              <button
-                onClick={handleSendOTP}
-                disabled={loading}
-                className="w-full py-3 mt-4 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 disabled:bg-blue-300 transition-colors shadow-sm"
-              >
-                {loading ? "Sending..." : "Send OTP"}
-              </button>
-            </div>
+            </>
           )}
 
           {step === 2 && (
@@ -536,10 +712,15 @@ export default function SignupPage() {
                   sx={{
                     width: "100%",
                     "& .MuiOutlinedInput-root": {
-                      backgroundColor: "white",
+                      backgroundColor: "black",
                       borderRadius: "0.5rem",
                       "& fieldset": {
-                        borderColor: "#6b7280",
+                        borderColor:
+                          passwordError === false
+                            ? "red"
+                            : passwordError === true
+                            ? "green"
+                            : "#6b7280",
                       },
                       "&:hover fieldset": {
                         borderColor: "#6b7280",
@@ -549,24 +730,34 @@ export default function SignupPage() {
                       },
                     },
                     "& .MuiInputLabel-root": {
-                      color: "#4A5568",
+                      color: "#d1d5db",
                     },
                     "& .MuiOutlinedInput-root.Mui-focused .MuiInputLabel-root":
                       {
                         color: "gray.300",
                       },
                     "& .MuiOutlinedInput-input": {
-                      color: "#4A5568",
+                      color: "#d1d5db",
                     },
                     "& .MuiOutlinedInput-input::placeholder": {
-                      color: "#4A5568",
+                      color: "#d1d5db",
                       opacity: 1,
                     },
                   }}
+                  onBlur={validatePassword}
                 />
-                {errors.password && (
-                  <p className="mt-1 text-xs text-red-500">{errors.password}</p>
-                )}
+                <AnimatePresence>
+                  {!passwordError && passwordErr && (
+                    <motion.p
+                      initial={{ y: -15, opacity: 0 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ y: -15, opacity: 0 }}
+                      className="text-red-700 font-bold mt-2 cursor-default"
+                    >
+                      {passwordErr}
+                    </motion.p>
+                  )}
+                </AnimatePresence>
               </div>
 
               <div>
@@ -600,10 +791,15 @@ export default function SignupPage() {
                   sx={{
                     width: "100%",
                     "& .MuiOutlinedInput-root": {
-                      backgroundColor: "white",
+                      backgroundColor: "black",
                       borderRadius: "0.5rem",
                       "& fieldset": {
-                        borderColor: "#6b7280",
+                        borderColor:
+                          confirmpasswordError === false
+                            ? "red"
+                            : confirmpasswordError === true
+                            ? "green"
+                            : "#6b7280",
                       },
                       "&:hover fieldset": {
                         borderColor: "#6b7280",
@@ -613,39 +809,47 @@ export default function SignupPage() {
                       },
                     },
                     "& .MuiInputLabel-root": {
-                      color: "#4A5568",
+                      color: "#d1d5db",
                     },
                     "& .MuiOutlinedInput-root.Mui-focused .MuiInputLabel-root":
                       {
                         color: "gray.300",
                       },
                     "& .MuiOutlinedInput-input": {
-                      color: "#4A5568",
+                      color: "#d1d5db",
                     },
                     "& .MuiOutlinedInput-input::placeholder": {
-                      color: "#4A5568",
+                      color: "#d1d5db",
                       opacity: 1,
                     },
                   }}
+                  onBlur={validateConfirmPassword}
                 />
-                {errors.confirmPassword && (
-                  <p className="mt-1 text-xs text-red-500">
-                    {errors.confirmPassword}
-                  </p>
-                )}
+                <AnimatePresence>
+                  {!confirmpasswordError && confirmpasswordErr && (
+                    <motion.p
+                      initial={{ y: -15, opacity: 0 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ y: -15, opacity: 0 }}
+                      className="text-red-700 font-bold mt-2 cursor-default"
+                    >
+                      {confirmpasswordErr}
+                    </motion.p>
+                  )}
+                </AnimatePresence>
               </div>
               <div className="flex gap-4">
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="flex-1 py-3 border border-gray-300 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                  className="flex-1 py-3 border border-gray-300 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50 cursor-pointer"
                 >
                   Back
                 </button>
                 <button
-                  onClick={handleSignup}
+                  onMouseDown={handleSignup}
                   disabled={loading}
-                  className="flex-1 py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 disabled:bg-blue-300 text-sm shadow-sm"
+                  className="flex-1 py-3 rounded-lg bg-emerald-600 text-white font-semibold hover:bg-emerald-700 disabled:bg-emerald-300 text-sm shadow-sm cursor-pointer"
                 >
                   {loading ? "Signing up..." : "Complete Signup"}
                 </button>

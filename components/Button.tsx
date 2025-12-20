@@ -11,7 +11,7 @@ export default function Button({
   disabled,
   ...rest
 }: ButtonProps) {
-  const base = "w-full px-4 py-2 rounded-lg font-medium transition ease-in-out duration-150";
+  const base = "w-full cursor-pointer px-4 py-2 rounded-lg font-medium transition ease-in-out duration-150";
   const variantClass =
     variant === "primary"
       ? "bg-blue-600 text-white hover:bg-blue-700 disabled:bg-blue-300"
