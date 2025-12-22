@@ -1,16 +1,23 @@
-/* Import Local NUKU NUKU Font */
+/* ========================= */
+/* IMPORT YOZAKURA REGULAR   */
+/* ========================= */
+
 @font-face {
-  font-family: 'NUKU NUKU';
-  src: url('/nuku-nuku/nuku1.ttf') format('truetype');
+  font-family: 'Yozakura Regular';
+  src: url('/fonts/YOZAKURA-Regular.woff2') format('woff2'),
+       url('/fonts/YOZAKURA-Regular.woff') format('woff');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
 
+/* ========================= */
+/* HERO CONTAINER            */
+/* ========================= */
+
 .content {
   position: relative;
   z-index: 3;
-  max-width: 100%;
   width: 100%;
   padding: 0 80px;
   color: white;
@@ -27,47 +34,31 @@
 }
 
 /* ========================= */
-/* TITLE CONTAINER LAYOUT    */
+/* TITLE CONTAINER           */
 /* ========================= */
 
 .titleContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: 40px;
 }
 
 /* ========================= */
-/* TITLE + PARA BASE STYLES  */
+/* TEXT BASE STYLES          */
 /* ========================= */
 
 .glitchTitle,
-.glitchX,
-.glitchPara {
-  position: relative;
-  color: white;
-}
-
-/* MAIN TITLE LINES */
-.glitchTitle {
-  font-size: 64px;
-  font-weight: 900;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-  margin: 0;
-}
-
-/* X CONNECTOR */
 .glitchX {
   font-size: 64px;
-  font-weight: 900;
   line-height: 1.05;
-  letter-spacing: -0.03em;
   margin: 0;
+  display: flex;
+  justify-content: center;
+  gap: 0.02em;
 }
 
-/* PARA */
 .glitchPara {
   margin-top: 26px;
   max-width: 520px;
@@ -77,194 +68,67 @@
 }
 
 /* ========================= */
-/* ENGLISH FONT STYLING      */
+/* ENGLISH FONT (YOZAKURA)   */
 /* ========================= */
 
 .englishFont .glitchTitle,
 .englishFont .glitchX {
-  font-family: 'NUKU NUKU', monospace !important;
-  letter-spacing: 0.2em;
+  font-family: 'Yozakura Regular', serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
+/* Paragraph stays readable */
 .englishFont .glitchPara {
-  font-family: 'NUKU NUKU', monospace !important;
-  letter-spacing: 0.1em;
-}
-
-/* Force font for pseudo elements too */
-.englishFont .glitchTitle::before,
-.englishFont .glitchTitle::after,
-.englishFont .glitchX::before,
-.englishFont .glitchX::after {
-  font-family: 'NUKU NUKU', monospace !important;
-  letter-spacing: 0.2em;
-}
-
-.englishFont .glitchPara::before,
-.englishFont .glitchPara::after {
-  font-family: 'NUKU NUKU', monospace !important;
-  letter-spacing: 0.1em;
+  font-family: system-ui, sans-serif;
+  letter-spacing: 0.05em;
 }
 
 /* ========================= */
-/* DUPLICATE GLITCH LAYERS   */
+/* PER-LETTER GLITCH         */
 /* ========================= */
 
-.glitchTitle::before,
-.glitchTitle::after,
-.glitchX::before,
-.glitchX::after,
-.glitchPara::before,
-.glitchPara::after {
-  content: attr(data-text);
-  position: absolute;
-  left: 0;
-  width: 100%;
-  color: white;
-  pointer-events: none;
-  opacity: 0.85;
+.char {
+  display: inline-block;
+  position: relative;
 }
 
-/* TITLE SLICE ZONES */
-.glitchTitle::before,
-.glitchX::before {
-  top: 0;
-  clip-path: inset(0 0 65% 0);
-}
-
-.glitchTitle::after,
-.glitchX::after {
-  top: 0;
-  clip-path: inset(40% 0 0 0);
-}
-
-/* PARA SLICE ZONES (lighter) */
-.glitchPara::before {
-  top: 0;
-  clip-path: inset(0 0 60% 0);
-  opacity: 0.5;
-}
-
-.glitchPara::after {
-  top: 0;
-  clip-path: inset(55% 0 0 0);
-  opacity: 0.4;
+/* Active glitch letters */
+.char.glitch {
+  animation: charJitter 0.08s steps(2) infinite;
 }
 
 /* ========================= */
-/* ACTIVE GLITCH STATE       */
+/* KEYFRAMES                 */
 /* ========================= */
 
-.active {
-  animation: jitter 0.06s steps(2) infinite;
-}
-
-.active::before {
-  animation: sliceTop 0.06s steps(2) infinite;
-}
-
-.active::after {
-  animation: sliceBottom 0.06s steps(2) infinite;
+@keyframes charJitter {
+  0%   { transform: translate(0); }
+  20%  { transform: translate(-2px, 1px); }
+  40%  { transform: translate(2px, -1px); }
+  60%  { transform: translate(-1px, 1px); }
+  80%  { transform: translate(1px, -1px); }
+  100% { transform: translate(0); }
 }
 
 /* ========================= */
-/* KEYFRAMES — VIDEO STYLE   */
-/* ========================= */
-
-@keyframes jitter {
-  0% {
-    transform: translate(0);
-  }
-  20% {
-    transform: translate(-6px, 2px);
-  }
-  40% {
-    transform: translate(6px, -2px);
-  }
-  60% {
-    transform: translate(-4px, 1px);
-  }
-  80% {
-    transform: translate(4px, -1px);
-  }
-  100% {
-    transform: translate(0);
-  }
-}
-
-@keyframes sliceTop {
-  0% {
-    transform: translate(0);
-  }
-  50% {
-    transform: translate(-12px, -4px);
-  }
-  100% {
-    transform: translate(0);
-  }
-}
-
-@keyframes sliceBottom {
-  0% {
-    transform: translate(0);
-  }
-  50% {
-    transform: translate(12px, 4px);
-  }
-  100% {
-    transform: translate(0);
-  }
-}
-
-/* ========================= */
-/* 📱 MOBILE VIEW (IMPORTANT) */
+/* MOBILE                    */
 /* ========================= */
 
 @media (max-width: 768px) {
   .content {
     padding: 0 24px;
-    max-width: 100%;
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
   }
 
   .glitchTitle,
   .glitchX {
     font-size: 38px;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
   }
 
   .glitchPara {
     font-size: 15px;
-    line-height: 1.55;
-    max-width: 100%;
-  }
-
-  .titleContainer {
-    gap: 8px;
-    margin-bottom: 30px;
-  }
-
-  /* Softer glitch for mobile (performance + readability) */
-  .active {
-    animation: jitter 0.08s steps(2) infinite;
-  }
-
-  .active::before,
-  .active::after {
-    animation-duration: 0.08s;
   }
 }
-
-/* ========================= */
-/* 📱 VERY SMALL DEVICES     */
-/* ========================= */
 
 @media (max-width: 420px) {
   .content {
@@ -278,10 +142,5 @@
 
   .glitchPara {
     font-size: 14px;
-  }
-
-  .titleContainer {
-    gap: 5px;
-    margin-bottom: 25px;
   }
 }

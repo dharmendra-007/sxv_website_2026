@@ -3,62 +3,72 @@
 import { useEffect, useState } from "react";
 import styles from "./Hero.module.css";
 
+const GLITCH_CHARS = "!@#$%^&*<>/[]{}";
+
+function glitchText(text: string, intensity = 2) {
+  const chars = text.split("");
+  const indexes = new Set<number>();
+
+  while (indexes.size < intensity) {
+    const i = Math.floor(Math.random() * chars.length);
+    if (chars[i] !== " ") indexes.add(i);
+  }
+
+  indexes.forEach((i) => {
+    chars[i] =
+      GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)];
+  });
+
+  return chars.join("");
+}
+
 export default function Hero() {
   const [jp, setJp] = useState(true);
-  const [glitch, setGlitch] = useState(false);
+  const [samavesh, setSamavesh] = useState("サマヴェシュ");
+  const [xText, setXText] = useState("×");
+  const [vassaunt, setVassaunt] = useState("ヴァサウント");
 
   useEffect(() => {
+    const baseSam = jp ? "サマヴェシュ" : "SAMAVESH";
+    const baseX = jp ? "×" : "X";
+    const baseVas = jp ? "ヴァサウント" : "VASSAUNT";
+
+    setSamavesh(baseSam);
+    setXText(baseX);
+    setVassaunt(baseVas);
+
+    const glitchInterval = setInterval(() => {
+      setSamavesh(glitchText(baseSam, 2));
+      setVassaunt(glitchText(baseVas, 2));
+
+      setTimeout(() => {
+        setSamavesh(baseSam);
+        setVassaunt(baseVas);
+      }, 90);
+    }, 600 + Math.random() * 600);
+
     const langSwitch = setInterval(() => {
       setJp((v) => !v);
     }, 2200);
 
-    const glitchPulse = setInterval(() => {
-      setGlitch(true);
-      setTimeout(() => setGlitch(false), 80);
-    }, 400 + Math.random() * 300);
-
     return () => {
+      clearInterval(glitchInterval);
       clearInterval(langSwitch);
-      clearInterval(glitchPulse);
     };
-  }, []);
-
-  const samaveshText = jp ? "サマヴェシュ" : "SAMAVESH";
-  const xText = jp ? "×" : "X";
-  const vassauntText = jp ? "ヴァサウント" : "VASSAUNT";
+  }, [jp]);
 
   const paraText =
     "An exploration of identity, design, and technology inspired by modern cyber culture and editorial storytelling.";
 
   return (
-    <div className={`${styles.content} ${!jp ? styles.englishFont : ''}`}>
+    <div className={`${styles.content} ${!jp ? styles.englishFont : ""}`}>
       <div className={styles.titleContainer}>
-        <h1
-          className={`${styles.glitchTitle} ${glitch ? styles.active : ""}`}
-          data-text={samaveshText}
-        >
-          {samaveshText}
-        </h1>
-        <h1
-          className={`${styles.glitchX} ${glitch ? styles.active : ""}`}
-          data-text={xText}
-        >
-          {xText}
-        </h1>
-        <h1
-          className={`${styles.glitchTitle} ${glitch ? styles.active : ""}`}
-          data-text={vassauntText}
-        >
-          {vassauntText}
-        </h1>
+        <h1 className={styles.glitchTitle}>{samavesh}</h1>
+        <h1 className={styles.glitchX}>{xText}</h1>
+        <h1 className={styles.glitchTitle}>{vassaunt}</h1>
       </div>
 
-      <p
-        className={`${styles.glitchPara} ${glitch ? styles.active : ""}`}
-        data-text={paraText}
-      >
-        {paraText}
-      </p>
+      <p className={styles.glitchPara}>{paraText}</p>
     </div>
   );
 }
