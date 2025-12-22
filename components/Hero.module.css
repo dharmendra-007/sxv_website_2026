@@ -1,12 +1,41 @@
+/* Import Local NUKU NUKU Font */
+@font-face {
+  font-family: 'NUKU NUKU';
+  src: url('/nuku-nuku/nuku1.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 .content {
   position: relative;
   z-index: 3;
-  max-width: 720px;
-  padding: 120px 80px;
+  max-width: 100%;
+  width: 100%;
+  padding: 0 80px;
   color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
 }
+
 .hero {
   padding-top: 120px;
+}
+
+/* ========================= */
+/* TITLE CONTAINER LAYOUT    */
+/* ========================= */
+
+.titleContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 40px;
 }
 
 /* ========================= */
@@ -14,17 +43,28 @@
 /* ========================= */
 
 .glitchTitle,
+.glitchX,
 .glitchPara {
   position: relative;
   color: white;
 }
 
-/* TITLE */
+/* MAIN TITLE LINES */
 .glitchTitle {
   font-size: 64px;
   font-weight: 900;
   line-height: 1.05;
   letter-spacing: -0.03em;
+  margin: 0;
+}
+
+/* X CONNECTOR */
+.glitchX {
+  font-size: 64px;
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin: 0;
 }
 
 /* PARA */
@@ -37,11 +77,43 @@
 }
 
 /* ========================= */
+/* ENGLISH FONT STYLING      */
+/* ========================= */
+
+.englishFont .glitchTitle,
+.englishFont .glitchX {
+  font-family: 'NUKU NUKU', monospace !important;
+  letter-spacing: 0.2em;
+}
+
+.englishFont .glitchPara {
+  font-family: 'NUKU NUKU', monospace !important;
+  letter-spacing: 0.1em;
+}
+
+/* Force font for pseudo elements too */
+.englishFont .glitchTitle::before,
+.englishFont .glitchTitle::after,
+.englishFont .glitchX::before,
+.englishFont .glitchX::after {
+  font-family: 'NUKU NUKU', monospace !important;
+  letter-spacing: 0.2em;
+}
+
+.englishFont .glitchPara::before,
+.englishFont .glitchPara::after {
+  font-family: 'NUKU NUKU', monospace !important;
+  letter-spacing: 0.1em;
+}
+
+/* ========================= */
 /* DUPLICATE GLITCH LAYERS   */
 /* ========================= */
 
 .glitchTitle::before,
 .glitchTitle::after,
+.glitchX::before,
+.glitchX::after,
 .glitchPara::before,
 .glitchPara::after {
   content: attr(data-text);
@@ -54,12 +126,14 @@
 }
 
 /* TITLE SLICE ZONES */
-.glitchTitle::before {
+.glitchTitle::before,
+.glitchX::before {
   top: 0;
   clip-path: inset(0 0 65% 0);
 }
 
-.glitchTitle::after {
+.glitchTitle::after,
+.glitchX::after {
   top: 0;
   clip-path: inset(40% 0 0 0);
 }
@@ -148,11 +222,19 @@
 
 @media (max-width: 768px) {
   .content {
-    padding: 96px 24px;
+    padding: 0 24px;
     max-width: 100%;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
   }
 
-  .glitchTitle {
+  .glitchTitle,
+  .glitchX {
     font-size: 38px;
     line-height: 1.15;
     letter-spacing: -0.02em;
@@ -162,6 +244,11 @@
     font-size: 15px;
     line-height: 1.55;
     max-width: 100%;
+  }
+
+  .titleContainer {
+    gap: 8px;
+    margin-bottom: 30px;
   }
 
   /* Softer glitch for mobile (performance + readability) */
@@ -180,11 +267,21 @@
 /* ========================= */
 
 @media (max-width: 420px) {
-  .glitchTitle {
+  .content {
+    padding: 0 16px;
+  }
+
+  .glitchTitle,
+  .glitchX {
     font-size: 32px;
   }
 
   .glitchPara {
     font-size: 14px;
+  }
+
+  .titleContainer {
+    gap: 5px;
+    margin-bottom: 25px;
   }
 }
