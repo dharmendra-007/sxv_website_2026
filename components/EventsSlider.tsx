@@ -39,19 +39,16 @@ const EVENTS_DATA = [
 
 export default function EventsSlider() {
   const [activeIndex, setActiveIndex] = useState(2);
-  const [direction, setDirection] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const touchStart = useRef(0);
   const touchEnd = useRef(0);
 
   // --- Handlers ---
   const nextSlide = useCallback(() => {
-    setDirection(1);
     setActiveIndex((prev) => (prev + 1) % EVENTS_DATA.length);
   }, []);
 
   const prevSlide = useCallback(() => {
-    setDirection(-1);
     setActiveIndex((prev) => (prev - 1 + EVENTS_DATA.length) % EVENTS_DATA.length);
   }, []);
 
@@ -92,13 +89,16 @@ export default function EventsSlider() {
 
   return (
     <div 
-      className="min-h-screen bg-transparent text-white flex flex-col items-center justify-center relative overflow-hidden font-sans"
+      className="min-h-screen relative text-white flex flex-col items-center justify-center overflow-hidden font-sans"
       onKeyDown={handleKeyDown}
       tabIndex={0}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
+      {/* Dark Background Overlay for Events Section */}
+      <div className="absolute inset-0 bg-black/100 backdrop-blur-sm z-0"></div>
+      
       <style>{`
         .smooth-transition {
           transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -115,7 +115,7 @@ export default function EventsSlider() {
       `}</style>
 
       {/* --- Background Typography --- */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden">
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 overflow-hidden">
         {EVENTS_DATA.map((item, index) => {
           const isActive = index === activeIndex;
           return (
@@ -137,7 +137,7 @@ export default function EventsSlider() {
 
       {/* --- Main Carousel Stage --- */}
       <div 
-        className="relative w-full max-w-7xl h-[600px] flex items-center justify-center perspective-1000 z-10"
+        className="relative w-full max-w-7xl h-[600px] flex items-center justify-center perspective-1000 z-20"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -238,7 +238,7 @@ export default function EventsSlider() {
       </div>
 
       {/* --- Mobile Indicators --- */}
-      <div className="absolute bottom-10 flex gap-2 z-20 md:hidden">
+      <div className="absolute bottom-10 flex gap-2 z-30 md:hidden">
         {EVENTS_DATA.map((_, idx) => (
           <div 
             key={idx}
