@@ -5,16 +5,27 @@ import EventsSlider from "@/components/EventsSlider";
 
 export default function Home() {
   return (
-    <main className={styles.landing}>
-      <GlitchBackground />
-
-      <div className={styles.main}>
-        <Hero />
-      </div>
+    <>
+      {/* Hero Section with Background */}
+      <section className="relative min-h-screen">
+        <GlitchBackground>
+          <div className={styles.main}>
+            <Hero />
+          </div>
+        </GlitchBackground>
+      </section>
+      
+      {/* Spacer between Hero and Events */}
+      <div className="h-20 bg-black"></div>
       
       {/* Events Slider Section */}
-      <EventsSlider />
-    </main>
+      <section className="relative z-10 bg-black">
+        <EventsSlider />
+      </section>
+      
+      {/* Spacer between Events and Footer */}
+      <div className="h-20 bg-black"></div>
+    </>
   );
 }
 

@@ -1,16 +1,29 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Shojumaru&family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;500;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
-}
-
-@theme inline {
+  
+  /* Theme variables for compatibility */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  
+  /* Cyberpunk Color Variables */
+  --cyber-black: #050202;
+  --cyber-dark: #0a0505;
+  --shrine-red: #a61818;
+  --blood-red: #5c0a0a;
+  --rust-brown: #8c6a5d;
+  --paper-white: #e6e6e6;
+  --ghost-white: #f8f8ff;
 }
+
+/* Theme variables moved to :root for compatibility */
 
 @media (prefers-color-scheme: dark) {
   :root {
@@ -23,6 +36,129 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--cyber-black);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #331010;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--shrine-red);
+}
+
+/* Neon Glow Utilities */
+.text-glow-red {
+  text-shadow: 0 0 10px var(--shrine-red), 0 0 20px var(--blood-red);
+}
+
+.text-glow-white {
+  text-shadow: 0 0 5px var(--paper-white), 0 0 10px #ffffff;
+}
+
+.box-glow-red {
+  box-shadow: 0 0 15px rgba(166, 24, 24, 0.3), inset 0 0 10px rgba(166, 24, 24, 0.1);
+}
+
+/* CRT Scanline Effect */
+.scanlines {
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0),
+    rgba(0,0,0,0) 50%,
+    rgba(0,0,0,0.2) 50%,
+    rgba(0,0,0,0.2)
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  opacity: 0.6;
+}
+
+/* Glitch Animation */
+.glitch-wrapper {
+  position: relative;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--cyber-dark);
+}
+
+.glitch-text::before {
+  left: 2px;
+  text-shadow: -1px 0 var(--shrine-red);
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-anim 5s infinite linear alternate-reverse;
+}
+
+.glitch-text::after {
+  left: -2px;
+  text-shadow: -1px 0 var(--paper-white);
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-anim2 5s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+  0% { clip: rect(35px, 9999px, 11px, 0); }
+  20% { clip: rect(68px, 9999px, 96px, 0); }
+  40% { clip: rect(15px, 9999px, 83px, 0); }
+  60% { clip: rect(2px, 9999px, 34px, 0); }
+  80% { clip: rect(59px, 9999px, 6px, 0); }
+  100% { clip: rect(93px, 9999px, 47px, 0); }
+}
+
+@keyframes glitch-anim2 {
+  0% { clip: rect(85px, 9999px, 36px, 0); }
+  20% { clip: rect(23px, 9999px, 2px, 0); }
+  40% { clip: rect(61px, 9999px, 91px, 0); }
+  60% { clip: rect(5px, 9999px, 73px, 0); }
+  80% { clip: rect(78px, 9999px, 14px, 0); }
+  100% { clip: rect(34px, 9999px, 55px, 0); }
+}
+
+/* Cyberpunk Clip Paths */
+.cyber-clip-tl {
+  clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px);
+}
+
+.cyber-clip-br {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+}
+
+/* Vertical Text */
+.vertical-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+/* Floating Animation */
+.float-anim {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
 }
 
 @keyframes fadeIn {

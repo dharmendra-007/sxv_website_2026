@@ -27,8 +27,22 @@ export default function Hero() {
   const [samavesh, setSamavesh] = useState("サマヴェシュ");
   const [xText, setXText] = useState("×");
   const [vassaunt, setVassaunt] = useState("ヴァサウント");
+  const [fontLoaded, setFontLoaded] = useState(false);
 
   useEffect(() => {
+    // Check if font is loaded
+    const checkFont = async () => {
+      try {
+        await document.fonts.load("normal 1em 'Yozakura Regular'");
+        setFontLoaded(true);
+      } catch (error) {
+        console.log("Font loading failed, using fallback");
+        setFontLoaded(true); // Still show content with fallback
+      }
+    };
+
+    checkFont();
+
     const baseSam = jp ? "サマヴェシュ" : "SAMAVESH";
     const baseX = jp ? "×" : "X";
     const baseVas = jp ? "ヴァサウント" : "VASSAUNT";
@@ -61,7 +75,7 @@ export default function Hero() {
     "An exploration of identity, design, and technology inspired by modern cyber culture and editorial storytelling.";
 
   return (
-    <div className={`${styles.content} ${!jp ? styles.englishFont : ""}`}>
+    <div className={`${styles.content} ${!jp ? styles.englishFont : ""} ${fontLoaded ? styles.fontLoaded : styles.fontLoading}`}>
       <div className={styles.titleContainer}>
         <h1 className={styles.glitchTitle}>{samavesh}</h1>
         <h1 className={styles.glitchX}>{xText}</h1>

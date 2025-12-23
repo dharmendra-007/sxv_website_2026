@@ -25,8 +25,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;  /* Changed from center to flex-start */
   height: 100vh;
+  padding-top: 200px;           /* Added padding to move content up from top */
+  font-family: 'Yozakura Regular', 'Orbitron', 'Rajdhani', monospace, serif; /* Default font for all content */
 }
 
 .hero {
@@ -57,6 +59,10 @@
   display: flex;
   justify-content: center;
   gap: 0.02em;
+  font-family: 'Yozakura Regular', 'Orbitron', 'Rajdhani', monospace, serif; /* Ensure custom font is used */
+  font-weight: normal;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 .glitchPara {
@@ -65,6 +71,7 @@
   font-size: 16px;
   line-height: 1.6;
   opacity: 0.75;
+  font-family: 'Rajdhani', system-ui, sans-serif; /* Use Rajdhani for paragraph */
 }
 
 /* ========================= */
@@ -73,15 +80,40 @@
 
 .englishFont .glitchTitle,
 .englishFont .glitchX {
-  font-family: 'Yozakura Regular', serif;
+  font-family: 'Yozakura Regular', 'Orbitron', 'Rajdhani', monospace, serif;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  font-weight: normal;
 }
 
 /* Paragraph stays readable */
 .englishFont .glitchPara {
-  font-family: system-ui, sans-serif;
+  font-family: 'Rajdhani', system-ui, sans-serif;
   letter-spacing: 0.05em;
+}
+
+/* ========================= */
+/* FONT LOADING STATES       */
+/* ========================= */
+
+.fontLoading .glitchTitle,
+.fontLoading .glitchX {
+  visibility: hidden; /* Hide until font loads to prevent flash */
+}
+
+.fontLoaded .glitchTitle,
+.fontLoaded .glitchX {
+  visibility: visible;
+  animation: fadeInFont 0.3s ease-in;
+}
+
+@keyframes fadeInFont {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* ========================= */
@@ -118,6 +150,7 @@
 @media (max-width: 768px) {
   .content {
     padding: 0 24px;
+    padding-top: 160px;  /* Adjusted for mobile */
   }
 
   .glitchTitle,
@@ -133,6 +166,7 @@
 @media (max-width: 420px) {
   .content {
     padding: 0 16px;
+    padding-top: 140px;  /* Adjusted for small mobile */
   }
 
   .glitchTitle,

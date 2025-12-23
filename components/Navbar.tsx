@@ -12,8 +12,8 @@ type NavbarProps = {
 }
 
 type navItem = {
-  label: String
-  href: String
+  label: string
+  href: string
 }
 
 const navItems: navItem[] = [
