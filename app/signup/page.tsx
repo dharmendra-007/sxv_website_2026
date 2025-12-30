@@ -361,7 +361,7 @@ export default function SignupPage() {
     setLoading(true);
     try {
       const payload = { ...form };
-      await signup(payload);
+      const res = await signup(payload);
       alert("Signup successful! Please login.");
       setStep(1);
       setForm({
@@ -376,7 +376,11 @@ export default function SignupPage() {
         confirmPassword: "",
       });
     } catch (error: any) {
-      alert(error?.response?.data.message || "Signup failed");
+      if(error.response?.status===404) alert("OTP expired , Please resend!");
+      else if(error.response?.status===401) alert("Invalid OTP, Please check your email.");
+      else{
+        alert(error?.response?.data.message || "Signup failed");
+      }
     } finally {
       setLoading(false);
     }

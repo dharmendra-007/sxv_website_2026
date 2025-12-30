@@ -181,8 +181,8 @@ export default function LoginPage() {
         boxShadow: "0 0 10px rgba(220, 38, 38, 0.3)",
       },
     },
-    "& .MuiInputLabel-root": { color: "#a8a29e", fontFamily: "var(--font-noto)" },
-    "& .MuiOutlinedInput-root.Mui-focused .MuiInputLabel-root": { color: "#a8a29e", fontFamily: "var(--font-noto)" },
+    "& .MuiInputLabel-root": { color: "#a8a29e", fontFamily: "var(--font-cinzel)" },
+    "& .MuiInputLabel-root.Mui-focused": { color: "#a8a29e", fontFamily: "var(--font-cinzel)" },
     "& .MuiOutlinedInput-input": { color: "#f5f5f4" },
   });
 
