@@ -89,7 +89,7 @@ export default function EventsSlider() {
 
   return (
     <div 
-      className="min-h-screen relative text-white flex flex-col items-center justify-center overflow-hidden font-sans"
+      className="py-20 relative text-white flex flex-col items-center justify-center overflow-hidden font-sans"
       onKeyDown={handleKeyDown}
       tabIndex={0}
       onTouchStart={handleTouchStart}
@@ -137,7 +137,7 @@ export default function EventsSlider() {
 
       {/* --- Main Carousel Stage --- */}
       <div 
-        className="relative w-full max-w-7xl h-[600px] flex items-center justify-center perspective-1000 z-20"
+        className="relative w-full max-w-7xl h-[500px] flex items-center justify-center perspective-1000 z-20"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
