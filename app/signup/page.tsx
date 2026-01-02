@@ -10,6 +10,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Noto_Serif_JP, Zen_Tokyo_Zoo, Cinzel } from "next/font/google";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { Sword, ChevronDown } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 // --- Typography ---
 const noto = Noto_Serif_JP({
@@ -174,6 +175,15 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const { login: authLogin } = useAuth();
+
+  // Redirect if user has already logged in before
+  useEffect(() => {
+    const hasLoggedInFlag = localStorage.getItem('hasLoggedIn');
+    if (hasLoggedInFlag === 'true' && mounted) {
+      window.location.href = "/login";
+    }
+  }, [mounted]);
 
   // Hydration fix
   useEffect(() => {
@@ -362,19 +372,23 @@ export default function SignupPage() {
     try {
       const payload = { ...form };
       const res = await signup(payload);
-      alert("Signup successful! Please login.");
-      setStep(1);
-      setForm({
-        name: "",
-        email: "",
-        phone: "",
-        institution: "vssut",
-        gradYear: YEARS[0].value,
-        branch: BRANCHES[0].value,
-        otp: "",
-        password: "",
-        confirmPassword: "",
-      });
+      
+      // If signup returns a token, log the user in automatically
+      if (res.data.token) {
+        const userData = {
+          id: res.data.user?.id || res.data.id || res.data._id || "user",
+          name: form.name, // Always use the form name for signup since we know it's correct
+          email: res.data.user?.email || res.data.email || form.email
+        };
+        
+        // Use Auth context login function which handles token storage and redirect
+        authLogin(res.data.token, userData);
+      } else {
+        // If no token returned, show success message and redirect to login
+        alert("Signup successful! Please login.");
+        window.location.href = "/login";
+      }
+      
     } catch (error: any) {
       if(error.response?.status===404) alert("OTP expired , Please resend!");
       else if(error.response?.status===401) alert("Invalid OTP, Please check your email.");

@@ -15,6 +15,7 @@ import {
 import { LoginSchema } from "@/Schemas/loginSchema";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sword } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 // --- Typography ---
 const noto = Noto_Serif_JP({
@@ -99,10 +100,17 @@ export default function LoginPage() {
   const [passwordErr, setpassworderr] = useState<string>("");
   const [emailErr, setEmailErr] = useState<string>("");
   const [error, setError] = useState("");
+  const { login: authLogin } = useAuth();
 
   // Hydration fix
   useEffect(() => {
     setMounted(true);
+    // Clear any existing errors when component mounts
+    setError("");
+    setEmailError("");
+    setPasswordError("");
+    setEmailErr("");
+    setpassworderr("");
   }, []);
 
   // Don't render until mounted to prevent hydration mismatch
@@ -149,8 +157,17 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const res = await login({ email, password });
-      localStorage.setItem("token", res.data.token);
-      alert("Login successful");
+      
+      // Extract user data from response - try different possible fields
+      const userData = {
+        id: res.data.user?.id || res.data.id || res.data._id || "user",
+        name: res.data.user?.name || res.data.name || res.data.user?.fullName || res.data.fullName || res.data.user?.firstName || res.data.firstName || email.split('@')[0],
+        email: res.data.user?.email || res.data.email || email
+      };
+      
+      // Use Auth context login function which handles token storage and redirect
+      authLogin(res.data.token, userData);
+      
     } catch (err: any) {
       setError((err.response?.data?.message) || "Login failed");
     } finally {

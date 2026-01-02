@@ -21,3 +21,30 @@ export const verifyOTP = (data:{email:string,otp:string})=>api.post("api/auth/ve
 export const verifyEmail = (data:{email:string})=>api.post("api/password/forgotpassword",data);
 
 export const forgotPassword = (data:{email:string})=>api.post("api/password/changepassword",data);
+
+export const logout = async () => {
+  try {
+    // If you have a logout endpoint on your backend, call it
+    // await api.post("api/auth/logout");
+    
+    // Clear token from localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('userData');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
+    
+    // Clear axios default headers
+    delete api.defaults.headers.common['Authorization'];
+    
+    return Promise.resolve();
+  } catch (error) {
+    // Even if the API call fails, we should still clear local data
+    localStorage.removeItem('token');
+    localStorage.removeItem('userData');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
+    delete api.defaults.headers.common['Authorization'];
+    
+    return Promise.resolve();
+  }
+};
