@@ -135,48 +135,51 @@ export default function ClubModal({ club, isOpen, onClose }: ClubModalProps) {
         />
 
         {/* Modal */}
-        <div className="relative bg-[#0f0a0a] border-2 border-[#8b5a2b] max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-[0_0_50px_rgba(139,90,43,0.3)] animate-in fade-in-0 zoom-in-95 duration-300">
+        <div className="relative bg-[#0f0a0a] border-2 border-[#8b5a2b] max-w-2xl w-full mt-20 max-h-[85vh] overflow-y-auto shadow-[0_0_50px_rgba(139,90,43,0.3)] animate-in fade-in-0 zoom-in-95 duration-300">
           {/* Japanese decorative elements */}
           <SamuraiSword />
           <JapaneseCastle />
           <CherryBlossom />
 
-          {/* Close button */}
-          <button
-            onClick={onClose}
-            className="absolute top-4 left-4 w-8 h-8 bg-[#500000] text-white rounded-full flex items-center justify-center hover:bg-[#700000] transition-colors z-10"
-          >
-            ×
-          </button>
 
           {/* Header with club image */}
-          <div className="relative h-20 overflow-hidden border-b-4 border-[#8b5a2b]">
-            {/* <Image
-              src={club.image || "/placeholder-1.png"}
-              alt={club.name}
-              fill
-              className="object-cover brightness-75"
-              unoptimized
-            /> */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0f0a0a] via-transparent to-transparent" />
+          <div className="sticky top-0 z-50 bg-[#0f0a0a] h-20 overflow-hidden border-b-4 border-[#8b5a2b]">
+            {/* Background Image (Commented out as per your snippet) */}
+            {/* <Image ... /> */}
 
-            {/* Japanese character overlay */}
+            {/* Background Gradient */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0f0a0a] via-[#1a1111] to-transparent" />
+
+            {/* Japanese character overlay (Keep absolute, move to background) */}
             <div
-              className="absolute bottom-4 right-4 text-6xl font-black text-white/20"
+              className="absolute bottom-[-10px] right-4 text-6xl font-black text-white/10 pointer-events-none"
               style={{ fontFamily: '"Shojumaru", cursive' }}
             >
               {club.overlayChar}
             </div>
 
-            {/* Club name overlay */}
-            <div className="absolute bottom-4 left-4">
-              <h2
-                className="text-2xl text-white font-bold mb-1"
-                style={{ fontFamily: '"Shojumaru", cursive' }}
+            {/* FLEX CONTAINER: Holds Button and Text side-by-side */}
+            <div className="relative z-10 h-full flex items-center px-4">
+              {/* 1. Close Button */}
+              <button
+                onClick={onClose}
+                className="w-8 h-8 flex-shrink-0 bg-[#500000] text-white rounded-full flex items-center justify-center hover:bg-[#700000] transition-colors mr-4"
               >
-                {club.name}
-              </h2>
-              <p className="text-[#8b5a2b] text-sm">{club.jpName}</p>
+                ×
+              </button>
+
+              {/* 2. Club Name & Subtitle */}
+              <div className="flex flex-col">
+                <h2
+                  className="text-2xl text-white font-bold leading-none"
+                  style={{ fontFamily: '"Shojumaru", cursive' }}
+                >
+                  {club.name}
+                </h2>
+                <p className="text-[#8b5a2b] text-xs font-semibold tracking-wider uppercase mt-1">
+                  {club.jpName}
+                </p>
+              </div>
             </div>
           </div>
 
@@ -188,7 +191,7 @@ export default function ClubModal({ club, isOpen, onClose }: ClubModalProps) {
                 <div
                   className="w-8 h-8 bg-[#500000] flex items-center justify-center mr-3"
                   style={{
-                    clipPath: "polygon(0 0, 100% 0, 85% 100%, 0% 100%)",
+                    clipPath: 'polygon(0 0, 100% 0, 85% 100%, 0% 100%)',
                   }}
                 >
                   <span className="text-white text-sm font-bold">
@@ -213,7 +216,7 @@ export default function ClubModal({ club, isOpen, onClose }: ClubModalProps) {
                 <div
                   className="w-8 h-8 bg-[#500000] flex items-center justify-center mr-3"
                   style={{
-                    clipPath: "polygon(0 0, 100% 0, 85% 100%, 0% 100%)",
+                    clipPath: 'polygon(0 0, 100% 0, 85% 100%, 0% 100%)',
                   }}
                 >
                   <span className="text-white text-sm">⚔</span>
@@ -238,21 +241,15 @@ export default function ClubModal({ club, isOpen, onClose }: ClubModalProps) {
                     </div>
 
                     <div className="pr-8">
-                      <h4 className="text-white font-semibold mb-1">
-                        {coordinator.name}
-                      </h4>
-
-                      <p className="text-[#8b5a2b] text-sm mb-2">
-                        {coordinator.role}
-                      </p>
-
                       <a
                         href={coordinator.contact}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-[#8b5a2b] hover:text-[#4d9bff] text-sm"
                       >
-                        🔗 LinkedIn
+                        <h4 className="text-white font-semibold mb-1 hover:text-[#e08b8b] hover:underline transition-colors">
+                          {coordinator.name}
+                        </h4>
                       </a>
                     </div>
                   </div>
@@ -266,7 +263,7 @@ export default function ClubModal({ club, isOpen, onClose }: ClubModalProps) {
                 <div
                   className="w-8 h-8 bg-[#500000] flex items-center justify-center mr-3"
                   style={{
-                    clipPath: "polygon(0 0, 100% 0, 85% 100%, 0% 100%)",
+                    clipPath: 'polygon(0 0, 100% 0, 85% 100%, 0% 100%)',
                   }}
                 >
                   <span className="text-white text-sm">🎓</span>
@@ -284,17 +281,11 @@ export default function ClubModal({ club, isOpen, onClose }: ClubModalProps) {
                 {facultyAdvisors.map((advisor, index) => (
                   <div
                     key={index}
-                    className="bg-[#120c0c] border border-[#2e1a1a] p-4"
+                    className="bg-[#120c0c] border border-[#2e1a1a] p-4 cursor-pointer"
                   >
                     <h4 className="text-white font-semibold mb-1">
                       {advisor.name}
                     </h4>
-
-                    {advisor.designation && (
-                      <p className="text-[#8b5a2b] text-sm">
-                        {advisor.designation}
-                      </p>
-                    )}
                   </div>
                 ))}
               </div>
@@ -339,5 +330,5 @@ export default function ClubModal({ club, isOpen, onClose }: ClubModalProps) {
         </div>
       </div>
     </>
-  );
+  )
 }
