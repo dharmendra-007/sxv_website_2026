@@ -1,9 +1,10 @@
-"use client";
+'use client'
 
-import React, { useState, useEffect } from "react";
-import Image from "next/image";
-import { clubs, Club } from "@/utils/clubData";
-import ClubModal from "@/components/ClubModal";
+import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
+import { clubs, Club } from '@/utils/clubData'
+import ClubModal from '@/components/ClubModal'
+import { Preview } from '@mui/icons-material'
 
 // --- SUB-COMPONENTS ---
 
@@ -16,61 +17,68 @@ const SamuraiCrest = () => (
       className="relative z-10 w-full h-full object-contain drop-shadow-[0_0_15px_rgba(100,0,0,0.8)] mix-blend-screen opacity-90 contrast-125 hover:scale-110 transition-transform duration-500"
     />
   </div>
-);
+)
 
 const GlitchingTitle = () => {
-  const [lang, setLang] = useState("EN");
-  const [glitch, setGlitch] = useState(false);
+  const [lang, setLang] = useState('EN')
+  const [glitch, setGlitch] = useState(false)
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setGlitch(true);
-      setTimeout(() => setLang((prev) => (prev === "EN" ? "JP" : "EN")), 200);
-      setTimeout(() => setGlitch(false), 800);
-    }, 3500);
-    return () => clearInterval(interval);
-  }, []);
+      setGlitch(true)
+      setTimeout(() => setLang((prev) => (prev === 'EN' ? 'JP' : 'EN')), 200)
+      setTimeout(() => setGlitch(false), 800)
+    }, 3500)
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <div className="relative pt-20">
       <h1
         className={`text-4xl md:text-7xl text-[#e5e5e5] uppercase tracking-wider relative z-10 text-center ${
-          glitch ? "glitch-active" : ""
+          glitch ? 'glitch-active' : ''
         }`}
         style={{ fontFamily: '"Shojumaru", cursive' }}
-        data-text={lang === "EN" ? "CLUBS & SOCIETIES" : "委員会とクラブ"}
+        data-text={lang === 'EN' ? 'CLUBS & SOCIETIES' : '委員会とクラブ'}
       >
         <span className="text-transparent bg-clip-text bg-gradient-to-b from-[#b30000] to-[#500000]">
-          {lang === "EN" ? "CLUBS & SOCIETIES" : "委員会とクラブ"}
+          {lang === 'EN' ? 'CLUBS & SOCIETIES' : '委員会とクラブ'}
         </span>
       </h1>
     </div>
-  );
-};
+  )
+}
 
 export default function ClubsPage() {
-  const [showAll, setShowAll] = useState(false);
-  const [selectedClub, setSelectedClub] = useState<Club | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const visibleClubs = showAll ? clubs : clubs.slice(0, 8);
+  const [showAll, setShowAll] = useState(false)
+  const [selectedClub, setSelectedClub] = useState<Club | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const visibleClubs = showAll ? clubs : clubs.slice(0, 8)
 
   const handleClubClick = (club: Club) => {
-    setSelectedClub(club);
-    setIsModalOpen(true);
-  };
+    setSelectedClub(club)
+    setIsModalOpen(true)
+  }
 
   const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedClub(null);
-  };
+    setIsModalOpen(false)
+    setSelectedClub(null)
+  }
 
-  const [showMore, setShowMore] = useState(false);
+  const [expandedStates, setExpandedStates] = useState<
+    Record<string | number, boolean>
+  >({})
+
+  const toggleExpand = (index:number) => {
+  handleClubClick(clubs[index])
+    
+  }
 
   return (
     <div className="min-h-screen bg-[#050000] text-[#cfcfcf] overflow-x-hidden relative font-sans">
       {/* GLOBAL STYLES INJECTION */}
       <style jsx global>{`
-        @import url("https://fonts.googleapis.com/css2?family=Shojumaru&family=Noto+Sans+JP:wght@300;700&display=swap");
+        @import url('https://fonts.googleapis.com/css2?family=Shojumaru&family=Noto+Sans+JP:wght@300;700&display=swap');
 
         .writing-vertical-rl {
           writing-mode: vertical-rl;
@@ -127,73 +135,78 @@ export default function ClubsPage() {
 
         {/* CLUBS GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 w-full max-w-[1400px]">
-          {visibleClubs.map((club) => (
-            <article
-              key={club.id}
-              className="group relative bg-[#0f0a0a] border border-[#2e0e0e] overflow-hidden flex flex-col h-[400px] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_15px_40px_rgba(80,0,0,0.5)] cursor-pointer"
-              onClick={() => handleClubClick(club)}
-            >
-              {/* Japanese vertical tag */}
-              <div className="absolute top-4 right-4 bg-black/90 border border-[#8b5a2b] text-[#8b5a2b] font-bold text-sm py-2 px-1 writing-vertical-rl z-20 group-hover:bg-[#500000] group-hover:text-white">
-                {club.jpName || "部員"}
-              </div>
-
-              {/* Image */}
-              <div className="relative w-full h-[200px] overflow-hidden border-b-[3px] border-[#500000]">
-                <Image
-                  src={club.image}
-                  alt={club.name}
-                  fill
-                  className="object-fir brightness-[0.7] group-hover:scale-110 group-hover:brightness-100 transition-all duration-700"
-                />
-                <div
-                  className="absolute -bottom-2 -left-1 text-[3.5rem] font-black text-white/5 pointer-events-none group-hover:text-white/20"
-                  style={{ fontFamily: '"Shojumaru", cursive' }}
-                >
-                  {club.overlayChar || "祭"}
+          {visibleClubs.map((club,i) => {
+            const isExpanded = expandedStates[i]
+            const words = club.description?.split(' ') || []
+            const isLong = words.length > 20
+            return (
+              <article
+                key={club.id}
+                className="group relative bg-[#0f0a0a] border border-[#2e0e0e] overflow-hidden flex flex-col h-[400px] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_15px_40px_rgba(80,0,0,0.5)] cursor-pointer"
+                onClick={() => handleClubClick(club)}
+              >
+                {/* Japanese vertical tag */}
+                <div className="absolute top-4 right-4 bg-black/90 border border-[#8b5a2b] text-[#8b5a2b] font-bold text-sm py-2 px-1 writing-vertical-rl z-20 group-hover:bg-[#500000] group-hover:text-white">
+                  {club.jpName || '部員'}
                 </div>
-              </div>
 
-              {/* Info */}
-              <div className="flex-grow p-5 flex flex-col justify-between relative">
-                <div className="absolute bottom-4 right-4 w-10 h-10 border-2 border-[#700808] rounded text-[#700808] flex items-center justify-center font-black text-sm opacity-20 -rotate-6">
-                  {club.hanko || "印"}
-                </div>
-                <div>
-                  <h3
-                    className="text-xl text-white mb-2 uppercase leading-tight"
+                {/* Image */}
+                <div className="relative w-full h-[200px] overflow-hidden border-b-[3px] border-[#500000]">
+                  <Image
+                    src={club.image}
+                    alt={club.name}
+                    fill
+                    className="object-fir brightness-[0.7] group-hover:scale-110 group-hover:brightness-100 transition-all duration-700"
+                  />
+                  <div
+                    className="absolute -bottom-2 -left-1 text-[3.5rem] font-black text-white/5 pointer-events-none group-hover:text-white/20"
                     style={{ fontFamily: '"Shojumaru", cursive' }}
                   >
-                    {club.name}
-                  </h3>
-                  <div
-                    className="mt-2 text-gray-400 text-xs leading-relaxed"
-                    onClick={(e) => {
-                      e.stopPropagation(); // avoid triggering modal
-                      setShowMore(!showMore);
-                    }}
-                  >
-                    <p className={showMore ? "" : "line-clamp-3"}>
-                      {club.description}
-
-                      {!showMore && (
-                        <span className="text-[#c97a7a] font-semibold">
-                          … See more
-                        </span>
-                      )}
-                    </p>
+                    {club.overlayChar || '祭'}
                   </div>
                 </div>
-              </div>
-            </article>
-          ))}
+
+                {/* Info */}
+                <div className="flex-grow p-5 flex flex-col justify-between relative">
+                  <div className="absolute bottom-4 right-4 w-10 h-10 border-2 border-[#700808] rounded text-[#700808] flex items-center justify-center font-black text-sm opacity-20 -rotate-6">
+                    {club.hanko || '印'}
+                  </div>
+                  <div>
+                    <h3
+                      className="text-xl text-white mb-2 uppercase leading-tight"
+                      style={{ fontFamily: '"Shojumaru", cursive' }}
+                    >
+                      {club.name}
+                    </h3>
+                    <div
+                      className="mt-2 text-gray-400 text-xs leading-relaxed cursor-pointer group"
+                      onClick={() => setSelectedClub(club)} // 1. Trigger the modal here
+                    >
+                      {/* 2. Always show just the truncated text */}
+                      {club.description?.split(' ').length > 20
+                        ? club.description.split(' ').slice(0, 20).join(' ') +
+                          '...'
+                        : club.description}
+
+                      {/* 3. Show "See more" if text is long */}
+                      {club.description?.split(' ').length > 20 && (
+                        <span className="text-[#c97a7a] font-semibold ml-1 group-hover:underline group-hover:text-[#e08b8b]">
+                          See more
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </article>
+            )
+          })}
         </div>
 
         {/* SHOW MORE BUTTON */}
         {!showAll && (
           <button
             onClick={() => setShowAll(true)}
-            className="mt-16 px-10 py-4 bg-[#500000] text-white font-bold tracking-[0.3em] uppercase hover:bg-[#8b0000] transition-colors skew-x-[-10deg]"
+            className="mt-16 px-10 py-4 mb-10 bg-[#500000] text-white font-bold tracking-[0.3em] uppercase hover:bg-[#8b0000] transition-colors skew-x-[-10deg]"
             style={{ fontFamily: '"Shojumaru", cursive' }}
           >
             Explore All Clubs
@@ -210,5 +223,5 @@ export default function ClubsPage() {
         )}
       </main>
     </div>
-  );
+  )
 }
