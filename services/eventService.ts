@@ -12,6 +12,7 @@ export interface BackendEvent {
   organiser: string;
   startTime: string;
   endTime: string;
+  registrationLink?:string,
   firstPrize?: string;
   secondPrize?: string;
   thirdPrize?: string;

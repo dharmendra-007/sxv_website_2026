@@ -6,6 +6,7 @@ import { EventItems } from "@/types/Event";
 import { eventService } from "@/services/eventService";
 import { transformBackendEventToFrontend, getUniqueCategories, getUniqueDays } from "@/utils/eventTransformer";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import Link from 'next/link';
 
 type ScrollOption = { id: string; label?: string; icon?: React.ComponentType<any> };
 type StyledEvent = EventItems & { image: string; japaneseTitle: string };
@@ -117,49 +118,90 @@ const ScrollSelector = ({
 
 const EventCard = ({ event }: { event: StyledEvent }) => {
   const [flipped, setFlipped] = useState(false);
-
+  console.log(event);
   return (
-    <div className="group w-full h-[320px] md:h-[360px] perspective-1000 cursor-pointer" onClick={() => setFlipped(!flipped)}>
-      <div className={`relative w-full h-full transition-all duration-700 transform-style-3d ${flipped ? 'rotate-y-180' : ''}`}>
+    <div
+      className="group w-full h-[320px] md:h-[360px] perspective-1000 cursor-pointer"
+      onClick={() => setFlipped(!flipped)}
+    >
+      <div
+        className={`relative w-full h-full transition-all duration-700 transform-style-3d ${
+          flipped ? 'rotate-y-180' : ''
+        }`}
+      >
         <div className="absolute w-full h-full backface-hidden bg-[#0a0a0a] border border-[#d4af37]/30 group-hover:border-[#d4af37] transition-colors overflow-hidden rounded-sm shadow-lg">
           <div className="absolute inset-0">
-             <img src={event.image} alt={event.title} className="w-full h-full object-cover opacity-60 grayscale-[30%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
-             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90"></div>
+            <img
+              src={event.image}
+              alt={event.title}
+              className="w-full h-full object-cover opacity-60 grayscale-[30%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90"></div>
           </div>
           <div className="absolute bottom-0 left-0 p-5 w-full">
             <span className="inline-block px-1.5 py-0.5 mb-2 text-[10px] font-mono text-[#d4af37] border border-[#d4af37] bg-black/80">
-                {event.category.toUpperCase()}
+              {event.category.toUpperCase()}
             </span>
-            <h3 className="text-xl md:text-2xl font-cinzel font-bold text-white mb-1 group-hover:text-red-500 transition-colors drop-shadow-lg">{event.title}</h3>
-            <p className="text-gray-300 text-xs flex items-center gap-1.5 font-mono"><Clock size={12} className="text-red-500" /> {event.time}</p>
+            <h3 className="text-xl md:text-2xl font-cinzel font-bold text-white mb-1 group-hover:text-red-500 transition-colors drop-shadow-lg">
+              {event.title}
+            </h3>
+            <p className="text-gray-300 text-xs flex items-center gap-1.5 font-mono">
+              <Clock size={12} className="text-red-500" /> {event.time}
+            </p>
           </div>
-          <div className="writing-vertical-rl text-3xl font-noto font-bold text-white/10 absolute right-3 bottom-12 pointer-events-none">{event.japaneseTitle}</div>
+          <div className="writing-vertical-rl text-3xl font-noto font-bold text-white/10 absolute right-3 bottom-12 pointer-events-none">
+            {event.japaneseTitle}
+          </div>
         </div>
 
         <div className="absolute w-full h-full backface-hidden rotate-y-180 bg-[#050505] border border-red-900 rounded-sm p-5 flex flex-col relative overflow-hidden">
-            <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_#4a0000_0%,_#000000_100%)]"></div>
-            <div className="z-10 flex flex-col h-full">
-                <div className="flex justify-between items-start mb-4 border-b border-red-900/30 pb-3">
-                    <div>
-                        <h3 className="text-lg font-cinzel font-bold text-[#d4af37]">{event.title}</h3>
-                        <p className="text-red-500 font-noto text-xs">{event.japaneseTitle}</p>
-                    </div>
-                    <Zap className="text-red-500 w-4 h-4" />
-                </div>
-                <div className="space-y-3 flex-grow font-mono text-xs text-gray-300 overflow-y-auto">
-                    <p className="leading-relaxed text-gray-400 italic">"{event.description}"</p>
-                    <div className="space-y-2 pt-2 border-t border-white/5">
-                        <div className="flex items-center gap-2"><Calendar className="text-red-600 w-3 h-3" /><span>{event.day}</span></div>
-                        <div className="flex items-center gap-2"><Clock className="text-red-600 w-3 h-3" /><span>{event.time}</span></div>
-                        <div className="flex items-center gap-2"><MapPin className="text-red-600 w-3 h-3" /><span>{event.venue}</span></div>
-                    </div>
-                </div>
-                <button className="w-full mt-3 py-2 bg-red-900/10 hover:bg-red-900/30 border border-red-900/50 text-red-500 hover:text-white font-cinzel font-bold text-[10px] tracking-widest transition-all uppercase">Register</button>
+          <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_#4a0000_0%,_#000000_100%)]"></div>
+          <div className="z-10 flex flex-col h-full">
+            <div className="flex justify-between items-start mb-4 border-b border-red-900/30 pb-3">
+              <div>
+                <h3 className="text-lg font-cinzel font-bold text-[#d4af37]">
+                  {event.title}
+                </h3>
+                <p className="text-red-500 font-noto text-xs">
+                  {event.japaneseTitle}
+                </p>
+              </div>
+              <Zap className="text-red-500 w-4 h-4" />
             </div>
+            <div className="space-y-3 flex-grow font-mono text-xs text-gray-300 overflow-y-auto">
+              <p className="leading-relaxed text-gray-400 italic">
+                "{event.description}"
+              </p>
+              <div className="space-y-2 pt-2 border-t border-white/5">
+                <div className="flex items-center gap-2">
+                  <Calendar className="text-red-600 w-3 h-3" />
+                  <span>{event.day}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="text-red-600 w-3 h-3" />
+                  <span>{event.time}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <MapPin className="text-red-600 w-3 h-3" />
+                  <span>{event.venue}</span>
+                </div>
+              </div>
+            </div>
+
+            {event.registrationLink && (
+              <Link
+                href={event.registrationLink}
+                target="_blank"
+                className="block text-center w-full mt-3 py-2 bg-red-900/10 hover:bg-red-900/30 border border-red-900/50 text-red-500 hover:text-white font-cinzel font-bold text-[10px] tracking-widest transition-all uppercase"
+              >
+                Register
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </div>
-  );
+  )
 };
 
 const App = () => {
@@ -177,7 +219,6 @@ const App = () => {
         setLoading(true);
         setError(null);
         const response = await eventService.getAllEvents();
-        
         if (!response.events || response.events.length === 0) {
           setError("No events found. Please check back later.");
           return;
@@ -220,6 +261,7 @@ const App = () => {
   const filteredEvents = eventsData.filter(event => 
     event.day === activeDay && event.category === activeCategory
   );
+  console.log(filteredEvents)
 
   const retryFetch = () => {
     setError(null);
