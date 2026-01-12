@@ -11,7 +11,7 @@ import { Noto_Serif_JP, Zen_Tokyo_Zoo, Cinzel } from "next/font/google";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { Sword, ChevronDown } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { jwtDecode } from 'jwt-decode'
+
 
 // --- Typography ---
 const noto = Noto_Serif_JP({

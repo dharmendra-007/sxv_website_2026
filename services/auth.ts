@@ -13,8 +13,11 @@ export const signup = (data: {
   branch?: string;
 }) => api.post("api/auth/signup", data);
 
-export const login = (data: { email: string; password: string }) =>
-  api.post("api/auth/login", data);
+export const login = (data: { email: string; password: string }) => {
+  console.log('Login service called with:', { email: data.email, password: '***' });
+  console.log('API base URL:', process.env.NEXT_PUBLIC_API_URL);
+  return api.post("api/auth/login", data);
+};
 
 export const verifyOTP = (data:{email:string,otp:string})=>api.post("api/auth/verifyOTP",data);
 

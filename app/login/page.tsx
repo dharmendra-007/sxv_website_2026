@@ -168,21 +168,67 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
+      console.log('Attempting login with:', { email, password: '***' });
       const res = await login({ email, password });
+      console.log('Login response:', res.data);
+      
+      // Check if we have a token in the response
+      if (!res.data.token) {
+        throw new Error('No token received from server');
+      }
       
       // Extract user data from response - try different possible fields
-      const decoded: any = jwtDecode(res.data.token)
+      const decoded: any = jwtDecode(res.data.token);
+      console.log('Decoded token:', decoded);
+      
       const userData = {
-        id: decoded.userId || decoded._id || decoded.sub || 'user',
-        name: decoded.username,
-        email: decoded.email,
-      }
+        id: decoded.userId || decoded._id || decoded.sub || decoded.id || 'user',
+        name: decoded.username || decoded.name || decoded.displayName || 'User',
+        email: decoded.email || email,
+      };
+      
+      console.log('User data:', userData);
       
       // Use Auth context login function which handles token storage and redirect
       authLogin(res.data.token, userData);
       
     } catch (err: any) {
-      setError(err.response?.data?.message || "Login failed. Please check your credentials.");
+      console.error('Login error:', err);
+      
+      // More detailed error handling
+      let errorMessage = "Login failed. Please try again.";
+      
+      if (err.response) {
+        // Server responded with error status
+        const status = err.response.status;
+        const serverMessage = err.response.data?.message || err.response.data?.error;
+        
+        switch (status) {
+          case 400:
+            errorMessage = serverMessage || "Invalid email or password format.";
+            break;
+          case 401:
+            errorMessage = "Invalid email or password.";
+            break;
+          case 404:
+            errorMessage = "User not found. Please check your email or sign up.";
+            break;
+          case 500:
+            errorMessage = "Server error. Please try again later.";
+            console.error('Server error details:', err.response.data);
+            break;
+          default:
+            errorMessage = serverMessage || `Server error (${status}). Please try again.`;
+        }
+      } else if (err.request) {
+        // Network error
+        errorMessage = "Network error. Please check your connection and try again.";
+      } else if (err.message) {
+        // Other error
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
