@@ -237,10 +237,10 @@ const handleRegister = async (e: React.MouseEvent) => {
             {event.registrationLink && (
               
               <button
-              disabled={isRegistered || isRegistering}
+             
                 className={`block text-center w-full mt-3 py-2 bg-red-900/10 hover:bg-red-900/30 border border-red-900/50 text-red-500 hover:text-white font-cinzel font-bold text-[10px] tracking-widest transition-all uppercase ${
                   isRegistering && 'cursor-wait'
-                } ${isRegistered && 'cursor-not-allowed '}`}
+                }`}
                 onClick={handleRegister}
               >
                 {isRegistering ? (
