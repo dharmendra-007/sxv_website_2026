@@ -3,8 +3,11 @@ export interface TeamMember {
   name: string;
   designation: string;
   image: string;
-  jpTitle?: string; // Optional: Adds Japanese flair to the designation
+  jpTitle?: string;
+  linkedin?: string;
+  email?: string;
 }
+
 
 export const honourableMentions: TeamMember[] = [
   {
@@ -13,6 +16,7 @@ export const honourableMentions: TeamMember[] = [
     designation: "Hon'ble Vice Chancellor, VSSUT",
     jpTitle: "総長", 
     image: "https://res.cloudinary.com/dlm8mel1x/image/upload/v1739726474/sxv/pxqyjgsihzbkrhdskehw.jpg",
+    linkedin:"https://www.linkedin.com/in/aryan-rajguru-a1333230a/",
   },
   {
     id: "2",
@@ -40,16 +44,26 @@ export const honourableMentions: TeamMember[] = [
 export const studentBodies: TeamMember[] = [
   {
     id: "5",
-    name: "Sandip Kumar Mohanty",
-    designation: "Coordinator, Technical Society",
+    name: "Aniket Palei",
+    designation: "Coordinator, VASSAUNT",
     jpTitle: "調整役",
-    image: "https://res.cloudinary.com/dml2v8bov/image/upload/v1739783637/wgdnjwfsunf4hgg5nsp7.jpg",
+    image: "/teams/tech1.png",
+    linkedin:"https://www.linkedin.com/in/aryan-rajguru-a1333230a/",
   },
   {
     id: "6",
-    name: "Priyambada Acharya",
-    designation: "Coordinator, Technical Society",
+    name: "Aditi Kar",
+    designation: "Coordinator, VASSAUNT",
     jpTitle: "調整役",
-    image: "https://res.cloudinary.com/dml2v8bov/image/upload/v1739783638/gsfvyjeingu0z3wnggcp.jpg",
+    image: "/teams/aditi.jpg",
+    linkedin:"https://www.linkedin.com/in/aryan-rajguru-a1333230a/",
+  },
+  {
+    id: "7",
+    name: "suhani dash",
+    designation: "Coordinator, SAMAVESH",
+    jpTitle: "調整役",
+    image: "/teams/suhani.jpg",
+    linkedin:"https://www.linkedin.com/in/aryan-rajguru-a1333230a/",
   },
 ];

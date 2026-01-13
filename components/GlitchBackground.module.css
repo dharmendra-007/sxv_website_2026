@@ -1,34 +1,50 @@
 .hero {
-  position: absolute;    /* Changed from fixed to absolute */
-  inset: 0;             /* top:0 left:0 right:0 bottom:0 */
-  width: 100%;
-  height: 100%;         /* Changed from 100vh to 100% */
-  overflow: hidden;
-  background: black;
-  z-index: 0;           /* Background layer */
-}
-
-/* VIDEO */
-.video {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  overflow: hidden;
+  background: #0f0f0f;
   z-index: 0;
+  cursor: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* SAME EDITORIAL DARK GRADIENT */
+/* Image Layers */
+.imageLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.layerBottom {
+  z-index: 1;
+}
+
+.layerTop {
+  z-index: 2;
+  /* Mask will be applied via JavaScript */
+}
+
+/* DARK OVERLAY */
 .overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     to right,
-    rgba(0, 0, 0, 0.65),
-    rgba(0, 0, 0, 0.35),
-    rgba(0, 0, 0, 0.15)
+    rgba(0, 0, 0, 0.4),
+    rgba(0, 0, 0, 0.25),
+    rgba(0, 0, 0, 0.1)
   );
-  z-index: 1;
+  z-index: 3;
+  pointer-events: none;
 }
 
 /* FILM GRAIN */
@@ -38,7 +54,31 @@
   background-image: url("https://grainy-gradients.vercel.app/noise.svg");
   opacity: 0.18;
   pointer-events: none;
-  z-index: 2;
+  z-index: 4;
+}
+
+/* Custom Cursor */
+.cursorFollower {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 100;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: difference;
+  transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+}
+
+.hero:hover .cursorFollower {
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0);
+  border-color: rgba(255, 255, 255, 0.8);
 }
 
 /* PAGE GLITCH */
@@ -71,6 +111,14 @@
 @media (max-width: 768px) {
   .grain {
     opacity: 0.12;
+  }
+  
+  .hero {
+    cursor: auto;
+  }
+  
+  .cursorFollower {
+    display: none;
   }
 }
 

@@ -46,6 +46,7 @@ export function transformBackendEventToFrontend(backendEvent: BackendEvent): Eve
 
   return {
     id: backendEvent._id,
+    orgId: backendEvent.orgId,
     title: backendEvent.eventName,
     category: category,
     day: day,
@@ -55,6 +56,7 @@ export function transformBackendEventToFrontend(backendEvent: BackendEvent): Eve
     organizingClub: backendEvent.organiser,
     shortDescription: backendEvent.eventDescription.substring(0, 100) + "...",
     description: backendEvent.eventDescription,
+    registrationLink:backendEvent.registrationLink,
     rules: [
       "Follow event guidelines",
       "Respect organizers and participants", 

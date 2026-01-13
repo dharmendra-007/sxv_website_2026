@@ -54,8 +54,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             .replace(/[0-9]/g, '') // Remove numbers
             .replace(/[._-]/g, ' ') // Replace dots, underscores, hyphens with spaces
             .split(' ')
-            .filter(word => word.length > 0) // Remove empty strings
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize each word
+            .filter((word: string) => word.length > 0) // Remove empty strings
+            .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize each word
             .join(' ');
           
           // If still empty or too short, use a fallback
@@ -98,8 +98,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .replace(/[0-9]/g, '') // Remove numbers
         .replace(/[._-]/g, ' ') // Replace dots, underscores, hyphens with spaces
         .split(' ')
-        .filter(word => word.length > 0) // Remove empty strings
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize each word
+        .filter((word: string) => word.length > 0) // Remove empty strings
+        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize each word
         .join(' ');
       
       // If still empty or too short, use a fallback

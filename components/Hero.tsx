@@ -1,88 +1,90 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import styles from "./Hero.module.css";
 
-const GLITCH_CHARS = "!@#$%^&*<>/[]{}";
-
-function glitchText(text: string, intensity = 2) {
-  const chars = text.split("");
-  const indexes = new Set<number>();
-
-  while (indexes.size < intensity) {
-    const i = Math.floor(Math.random() * chars.length);
-    if (chars[i] !== " ") indexes.add(i);
-  }
-
-  indexes.forEach((i) => {
-    chars[i] =
-      GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)];
-  });
-
-  return chars.join("");
-}
-
 export default function Hero() {
-  const [jp, setJp] = useState(true);
-  const [samavesh, setSamavesh] = useState("サマヴェシュ");
-  const [xText, setXText] = useState("×");
-  const [vassaunt, setVassaunt] = useState("ヴァサウント");
-  const [fontLoaded, setFontLoaded] = useState(false);
-
   useEffect(() => {
-    // Check if font is loaded
-    const checkFont = async () => {
-      try {
-        await document.fonts.load("normal 1em 'Yozakura Regular'");
-        setFontLoaded(true);
-      } catch (error) {
-        console.log("Font loading failed, using fallback");
-        setFontLoaded(true); // Still show content with fallback
-      }
-    };
+    const heroText = document.getElementById('heroText');
+    const wordLeft = document.getElementById('wordLeft');
+    const wordRight = document.getElementById('wordRight');
+    const separator = document.getElementById('separator');
 
-    checkFont();
+    if (!heroText || !wordLeft || !wordRight || !separator) return;
 
-    const baseSam = jp ? "サマヴェシュ" : "SAMAVESH";
-    const baseX = jp ? "×" : "X";
-    const baseVas = jp ? "ヴァサウント" : "VASSAUNT";
+    const CONTENT_EN = { left: "SAMAVESH", right: "VASSAUNT" };
+    const CONTENT_JP = { left: "サマヴェシュ", right: "ヴァサント" };
 
-    setSamavesh(baseSam);
-    setXText(baseX);
-    setVassaunt(baseVas);
+    // Show separator first
+    setTimeout(() => {
+      separator.style.opacity = '1';
+    }, 100);
 
-    const glitchInterval = setInterval(() => {
-      setSamavesh(glitchText(baseSam, 2));
-      setVassaunt(glitchText(baseVas, 2));
+    // Start slide animation
+    setTimeout(() => {
+      heroText.classList.add(styles.animateIn);
+      
+      setTimeout(() => {
+        separator.classList.add(styles.morphX);
+      }, 1800);
 
       setTimeout(() => {
-        setSamavesh(baseSam);
-        setVassaunt(baseVas);
-      }, 90);
-    }, 600 + Math.random() * 600);
+        startGlitchCycle();
+      }, 3000);
+    }, 1000);
 
-    const langSwitch = setInterval(() => {
-      setJp((v) => !v);
-    }, 2200);
+    function startGlitchCycle() {
+      if (!wordLeft || !wordRight) return;
+      
+      const triggerGlitch = (element: HTMLElement, newText: string, durationMs: number) => {
+        element.classList.add(styles.glitchActive);
+        element.classList.remove(styles.flickerHold);
+        
+        setTimeout(() => {
+          element.innerText = newText;
+          element.setAttribute('data-text', newText);
+        }, durationMs / 2);
+        
+        setTimeout(() => {
+          element.classList.remove(styles.glitchActive);
+          element.classList.add(styles.flickerHold);
+        }, durationMs);
+      };
 
-    return () => {
-      clearInterval(glitchInterval);
-      clearInterval(langSwitch);
-    };
-  }, [jp]);
+      const transitionToJP = () => {
+        if (wordLeft && wordRight) {
+          triggerGlitch(wordLeft, CONTENT_JP.left, 400);
+          triggerGlitch(wordRight, CONTENT_JP.right, 400);
+          setTimeout(transitionToEN, 2400);
+        }
+      };
 
-  const paraText =
-    "THE ANNUAL TECHNO-CULTURAL FEST OF VSSUT";
+      const transitionToEN = () => {
+        if (wordLeft && wordRight) {
+          triggerGlitch(wordLeft, CONTENT_EN.left, 600);
+          triggerGlitch(wordRight, CONTENT_EN.right, 600);
+          setTimeout(transitionToJP, 4600);
+        }
+      };
+
+      setTimeout(transitionToJP, 500);
+    }
+  }, []);
 
   return (
-    <div className={`${styles.content} ${!jp ? styles.englishFont : ""} ${fontLoaded ? styles.fontLoaded : styles.fontLoading}`}>
+    <div className={styles.heroOverlay} id="heroText">
       <div className={styles.titleContainer}>
-        <h1 className={styles.glitchTitle}>{samavesh}</h1>
-        <h1 className={styles.glitchX}>{xText}</h1>
-        <h1 className={styles.glitchTitle}>{vassaunt}</h1>
+        <div className={`${styles.wordWrapper} ${styles.wordLeft}`} id="wordLeft" data-text="SAMAVESH">
+          SAMAVESH
+        </div>
+        <div className={styles.separator} id="separator">
+          <div className={`${styles.bar} ${styles.bar1}`}></div>
+          <div className={`${styles.bar} ${styles.bar2}`}></div>
+        </div>
+        <div className={`${styles.wordWrapper} ${styles.wordRight}`} id="wordRight" data-text="VASSAUNT">
+          VASSAUNT
+        </div>
       </div>
-
-      <p className={styles.glitchPara}>{paraText}</p>
     </div>
   );
 }

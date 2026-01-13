@@ -15,6 +15,7 @@ import {
 import { LoginSchema } from "@/Schemas/loginSchema";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
+import { jwtDecode } from "jwt-decode";
 
 // --- Typography ---
 const noto = Noto_Serif_JP({
@@ -170,11 +171,12 @@ export default function LoginPage() {
       const res = await login({ email, password });
       
       // Extract user data from response - try different possible fields
+      const decoded: any = jwtDecode(res.data.token)
       const userData = {
-        id: res.data.user?.id || res.data.id || res.data._id || "user",
-        name: res.data.user?.name || res.data.name || res.data.user?.fullName || res.data.fullName || res.data.user?.firstName || res.data.firstName || email.split('@')[0],
-        email: res.data.user?.email || res.data.email || email
-      };
+        id: decoded.userId || decoded._id || decoded.sub || 'user',
+        name: decoded.username,
+        email: decoded.email,
+      }
       
       // Use Auth context login function which handles token storage and redirect
       authLogin(res.data.token, userData);

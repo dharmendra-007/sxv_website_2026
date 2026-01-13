@@ -1,14 +1,18 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Clock, MapPin, Calendar, ChevronDown, Zap, Theater, Gamepad2, Sparkles, X } from 'lucide-react';
+import { Clock, MapPin, Calendar, ChevronDown, Zap, Theater, Gamepad2, Sparkles, X, Loader2, Check } from 'lucide-react';
 import { EventItems } from "@/types/Event";
 import { eventService } from "@/services/eventService";
 import { transformBackendEventToFrontend, getUniqueCategories, getUniqueDays } from "@/utils/eventTransformer";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
+import api from '@/utils/api';
 
 type ScrollOption = { id: string; label?: string; icon?: React.ComponentType<any> };
-type StyledEvent = EventItems & { image: string; japaneseTitle: string };
+type StyledEvent = EventItems & { image: string; japaneseTitle: string; orgId: string };
 
 const CATEGORY_ICONS: Record<string, any> = {
   Technical: Zap,
@@ -115,51 +119,151 @@ const ScrollSelector = ({
   );
 };
 
-const EventCard = ({ event }: { event: StyledEvent }) => {
-  const [flipped, setFlipped] = useState(false);
+const EventCard = ({ event, isRegistered }: { event: StyledEvent, isRegistered: boolean }) => {
+const [flipped, setFlipped] = useState(false);
 
+const [isRegistering, setIsRegistering] = useState(false)
+const router = useRouter()
+const { user, isLoggedIn } = useAuth() 
+
+const handleRegister = async (e: React.MouseEvent) => {
+  e.stopPropagation()
+
+  // 1. Check Login via Context
+  if (!isLoggedIn || !user) {
+    router.push('/login')
+    return
+  }
+
+  setIsRegistering(true)
+
+  try {
+    const response = await api.post('/api/events/register', {
+      userId: user.id,
+      eventId: event.id,
+      orgId: event.orgId,
+      eventName: event.title,
+    })
+
+    if (response.status === 200 || response.status === 201) {
+
+      if (event.registrationLink) {
+        window.open(event.registrationLink, '_blank')
+      }
+    }
+  } catch (error: any) {
+    console.error('Registration error:', error)
+    const message =
+      error.response?.data?.message || 'Something went wrong. Please try again.'
+    alert(message)
+  } finally {
+    setIsRegistering(false)
+  }
+}
   return (
-    <div className="group w-full h-[320px] md:h-[360px] perspective-1000 cursor-pointer" onClick={() => setFlipped(!flipped)}>
-      <div className={`relative w-full h-full transition-all duration-700 transform-style-3d ${flipped ? 'rotate-y-180' : ''}`}>
+    <div
+      className="group w-full h-[320px] md:h-[360px] perspective-1000 cursor-pointer"
+      onClick={() => setFlipped(!flipped)}
+    >
+      <div
+        className={`relative w-full h-full transition-all duration-700 transform-style-3d ${
+          flipped ? 'rotate-y-180' : ''
+        }`}
+      >
         <div className="absolute w-full h-full backface-hidden bg-[#0a0a0a] border border-[#d4af37]/30 group-hover:border-[#d4af37] transition-colors overflow-hidden rounded-sm shadow-lg">
           <div className="absolute inset-0">
-             <img src={event.image} alt={event.title} className="w-full h-full object-cover opacity-60 grayscale-[30%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
-             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90"></div>
+            {isRegistered && (
+              <div className="absolute top-4 right-4 z-20">
+                {/* Used Solid Gold background to match the 'FUN' tag border but distinct as a 'Stamp' */}
+                <div className="flex items-center gap-1.5 bg-[#d4af37] border border-[#d4af37] px-2.5 py-1 shadow-[0_0_20px_rgba(212,175,55,0.4)]">
+                  <Check className="w-3.5 h-3.5 text-black stroke-[3]" />
+                  <span className="text-[10px] font-mono font-extrabold text-black tracking-widest uppercase">
+                    REGISTERED
+                  </span>
+                </div>
+              </div>
+            )}
+            <img
+              src={event.image}
+              alt={event.title}
+              className="w-full h-full object-cover opacity-60 grayscale-[30%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90"></div>
           </div>
           <div className="absolute bottom-0 left-0 p-5 w-full">
             <span className="inline-block px-1.5 py-0.5 mb-2 text-[10px] font-mono text-[#d4af37] border border-[#d4af37] bg-black/80">
-                {event.category.toUpperCase()}
+              {event.category.toUpperCase()}
             </span>
-            <h3 className="text-xl md:text-2xl font-cinzel font-bold text-white mb-1 group-hover:text-red-500 transition-colors drop-shadow-lg">{event.title}</h3>
-            <p className="text-gray-300 text-xs flex items-center gap-1.5 font-mono"><Clock size={12} className="text-red-500" /> {event.time}</p>
+            <h3 className="text-xl md:text-2xl font-cinzel font-bold text-white mb-1 group-hover:text-red-500 transition-colors drop-shadow-lg">
+              {event.title}
+            </h3>
+            <p className="text-gray-300 text-xs flex items-center gap-1.5 font-mono">
+              <Clock size={12} className="text-red-500" /> {event.time}
+            </p>
           </div>
-          <div className="writing-vertical-rl text-3xl font-noto font-bold text-white/10 absolute right-3 bottom-12 pointer-events-none">{event.japaneseTitle}</div>
+          <div className="writing-vertical-rl text-3xl font-noto font-bold text-white/10 absolute right-3 bottom-12 pointer-events-none">
+            {event.japaneseTitle}
+          </div>
         </div>
 
         <div className="absolute w-full h-full backface-hidden rotate-y-180 bg-[#050505] border border-red-900 rounded-sm p-5 flex flex-col relative overflow-hidden">
-            <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_#4a0000_0%,_#000000_100%)]"></div>
-            <div className="z-10 flex flex-col h-full">
-                <div className="flex justify-between items-start mb-4 border-b border-red-900/30 pb-3">
-                    <div>
-                        <h3 className="text-lg font-cinzel font-bold text-[#d4af37]">{event.title}</h3>
-                        <p className="text-red-500 font-noto text-xs">{event.japaneseTitle}</p>
-                    </div>
-                    <Zap className="text-red-500 w-4 h-4" />
-                </div>
-                <div className="space-y-3 flex-grow font-mono text-xs text-gray-300 overflow-y-auto">
-                    <p className="leading-relaxed text-gray-400 italic">"{event.description}"</p>
-                    <div className="space-y-2 pt-2 border-t border-white/5">
-                        <div className="flex items-center gap-2"><Calendar className="text-red-600 w-3 h-3" /><span>{event.day}</span></div>
-                        <div className="flex items-center gap-2"><Clock className="text-red-600 w-3 h-3" /><span>{event.time}</span></div>
-                        <div className="flex items-center gap-2"><MapPin className="text-red-600 w-3 h-3" /><span>{event.venue}</span></div>
-                    </div>
-                </div>
-                <button className="w-full mt-3 py-2 bg-red-900/10 hover:bg-red-900/30 border border-red-900/50 text-red-500 hover:text-white font-cinzel font-bold text-[10px] tracking-widest transition-all uppercase">Register</button>
+          <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_#4a0000_0%,_#000000_100%)]"></div>
+          <div className="z-10 flex flex-col h-full">
+            <div className="flex justify-between items-start mb-4 border-b border-red-900/30 pb-3">
+              <div>
+                <h3 className="text-lg font-cinzel font-bold text-[#d4af37]">
+                  {event.title}
+                </h3>
+                <p className="text-red-500 font-noto text-xs">
+                  {event.japaneseTitle}
+                </p>
+              </div>
+              <Zap className="text-red-500 w-4 h-4" />
             </div>
+            <div className="space-y-3 flex-grow font-mono text-xs text-gray-300 overflow-y-auto">
+              <p className="leading-relaxed text-gray-400 italic">
+                "{event.description}"
+              </p>
+              <div className="space-y-2 pt-2 border-t border-white/5">
+                <div className="flex items-center gap-2">
+                  <Calendar className="text-red-600 w-3 h-3" />
+                  <span>{event.day}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="text-red-600 w-3 h-3" />
+                  <span>{event.time}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <MapPin className="text-red-600 w-3 h-3" />
+                  <span>{event.venue}</span>
+                </div>
+              </div>
+            </div>
+
+            {event.registrationLink && (
+              
+              <button
+              disabled={isRegistered || isRegistering}
+                className={`block text-center w-full mt-3 py-2 bg-red-900/10 hover:bg-red-900/30 border border-red-900/50 text-red-500 hover:text-white font-cinzel font-bold text-[10px] tracking-widest transition-all uppercase ${
+                  isRegistering && 'cursor-wait'
+                } ${isRegistered && 'cursor-not-allowed '}`}
+                onClick={handleRegister}
+              >
+                {isRegistering ? (
+                  <>
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                    PROCESSING...
+                  </>
+                ) : (
+                  'REGISTER'
+                )}
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
-  );
+  )
 };
 
 const App = () => {
@@ -170,6 +274,8 @@ const App = () => {
   const [activeCategory, setActiveCategory] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth() 
+  const [registeredEventIds, setRegisteredEventIds] = useState<string[]>([])
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -177,7 +283,6 @@ const App = () => {
         setLoading(true);
         setError(null);
         const response = await eventService.getAllEvents();
-        
         if (!response.events || response.events.length === 0) {
           setError("No events found. Please check back later.");
           return;
@@ -213,9 +318,26 @@ const App = () => {
         setLoading(false);
       }
     };
+    const fetchEventsRegistered = async () => {
+
+      
+      if (!user || !user.id) {
+        setRegisteredEventIds([])
+        return
+      }
+
+      try {
+        const response = await api.get(`/api/users/check/${user.id}`)
+        setRegisteredEventIds(response.data)
+      } catch (err) {
+        console.error('Failed to fetch registered events:', err)
+      }
+    }
 
     fetchEvents();
+    fetchEventsRegistered();
   }, []);
+
 
   const filteredEvents = eventsData.filter(event => 
     event.day === activeDay && event.category === activeCategory
@@ -269,7 +391,9 @@ const App = () => {
       {/* Red Ambient Background */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_#2a0000_0%,_#020202_80%)]"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[40vw] text-red-900 opacity-[0.05] font-noto font-bold select-none">祭</div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[40vw] text-red-900 opacity-[0.05] font-noto font-bold select-none">
+          祭
+        </div>
         <div className="absolute inset-0 bg-[linear-gradient(rgba(220,20,60,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(220,20,60,0.06)_1px,transparent_1px)] bg-[size:30px_30px]"></div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,#000000_100%)]"></div>
       </div>
@@ -278,25 +402,44 @@ const App = () => {
         <GlitchHeader />
 
         <div className="w-full flex justify-center gap-4 mb-12 z-40">
-             <ScrollSelector title="Timeline" options={days} selected={activeDay} onSelect={setActiveDay} />
-             <ScrollSelector title="Protocol" options={categories} selected={activeCategory} onSelect={setActiveCategory} type="icon" />
+          <ScrollSelector
+            title="Timeline"
+            options={days}
+            selected={activeDay}
+            onSelect={setActiveDay}
+          />
+          <ScrollSelector
+            title="Protocol"
+            options={categories}
+            selected={activeCategory}
+            onSelect={setActiveCategory}
+            type="icon"
+          />
         </div>
 
         <div className="w-full max-w-6xl min-h-[50vh]">
-             {filteredEvents.length > 0 ? (
-               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredEvents.map(event => <EventCard key={event.id} event={event} />)}
-               </div>
-             ) : (
-                <div className="text-center py-20 border border-red-900/30 bg-black/60 rounded-sm mt-8 backdrop-blur-sm">
-                    <X className="w-8 h-8 text-red-900/50 mx-auto mb-3" />
-                    <h3 className="text-lg font-cinzel text-gray-400">Archives Empty</h3>
-                </div>
-             )}
+          {filteredEvents.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredEvents.map((event) => (
+                <EventCard
+                  key={event.id}
+                  event={event}
+                  isRegistered={registeredEventIds.includes(event.id)}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20 border border-red-900/30 bg-black/60 rounded-sm mt-8 backdrop-blur-sm">
+              <X className="w-8 h-8 text-red-900/50 mx-auto mb-3" />
+              <h3 className="text-lg font-cinzel text-gray-400">
+                Archives Empty
+              </h3>
+            </div>
+          )}
         </div>
       </div>
     </div>
-  );
+  )
 };
 
 export default App;

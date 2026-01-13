@@ -12,6 +12,7 @@ import { motion, AnimatePresence, Variants } from "framer-motion";
 import { Sword, ChevronDown } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
+
 // --- Typography ---
 const noto = Noto_Serif_JP({
   subsets: ["latin"],

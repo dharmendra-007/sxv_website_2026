@@ -19,7 +19,7 @@ export const clubs: Club[] = [
     jpName: '謎の組織',
     description:
       'Enigma, the official web and coding club of VSSUT Burla, is a dynamic community of programmers, designers, and technology enthusiasts committed to nurturing innovation and problem solving skills. The club offers students practical exposure to diverse fields such as web and app development, game design, competitive programming, artificial intelligence, machine learning, cybersecurity, cloud computing and outreach domains.',
-    image: '/clubs/enigma.jpeg',
+    image: '/clubs/enigma.png',
     hanko: '暗',
     overlayChar: '謎',
   },
@@ -105,7 +105,7 @@ export const clubs: Club[] = [
   },
   {
     id: '10',
-    name: 'VVeerRacerss Electric',
+    name: 'VeerRacerss Electric',
     jpName: '速の侍',
     description:
       'VeerRacerss Electric is the official Formula Student team of VSSUT, Burla. Affiliated with SAE India, the team comprises undergraduate students who design, build and compete with electric formula-style race cars in national events like Formula Imperial, Supra SAE, Formula Bharat and FFS India.',
@@ -168,7 +168,7 @@ export const clubs: Club[] = [
     name: 'VEERRACING',
     jpName: '競争心',
     description: 'Pushing the limits of mechanical endurance.',
-    image: '/clubs/VeeRacing.jpeg',
+    image: '/clubs/VeerssRacing.png',
     hanko: '競',
     overlayChar: '輪',
   },
