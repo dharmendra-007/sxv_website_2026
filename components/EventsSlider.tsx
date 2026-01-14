@@ -26,13 +26,13 @@ const EVENTS_DATA = [
   {
     id: 4,
     title: "COMING SOON",
-    image: "/comingsoon.png",
+    image: "/cs2.png",
     color: "#fb923c" // Orangeish
   },
   {
     id: 5,
     title: "COMING SOON",
-    image: "/comingsoon.png",
+    image: "/cs3.png",
     color: "#60a5fa" // Blueish
   }
 ];
