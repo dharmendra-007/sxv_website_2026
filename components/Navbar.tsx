@@ -301,7 +301,7 @@ export default function Navbar() {
         <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#bd0029] to-transparent opacity-100 red-line-sheen overflow-hidden z-20" id="nav-border-glow" />
 
         <div className="max-w-full px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className={`flex justify-between items-center transition-all duration-300 ${isScrolled ? 'h-20' : 'h-24'}`} id="nav-container">
+          <div className="flex justify-between items-center h-20" id="nav-container">
             
             {/* Logo Section */}
             <div 
@@ -545,7 +545,7 @@ export default function Navbar() {
       </div>
 
       {/* Spacer to prevent content from going under fixed navbar */}
-      <div className={`transition-all duration-300 ${isScrolled ? 'h-20' : 'h-24'}`} />
+      <div className="h-20" />
     </>
   )
 }

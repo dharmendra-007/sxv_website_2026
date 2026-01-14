@@ -246,12 +246,12 @@ export const clubCoordinators: Record<string, ClubPeople> = {
   },
   '12': {
     coordinators: [
-      { name: "Srinibas Das", role: "coordinator", contact: "ryota.inoue@vssut.ac.in" },
-      { name: "Sonakshi Pradhan", role: "coordinator", contact: "kana.takagi@vssut.ac.in" }
+      { name: "Ayush Biswal", role: "coordinator", contact: "ayushbiswal710@gmail.com" },
+      { name: "Swati Swaroopa sahoo", role: "coordinator", contact: "swatiswaroopa@gmail.com" }
     ],
     facultyAdvisors: [
-      { name: "Dr. Gyanranjan Shial", designation: "Faculty Advisor" },
-      { name: "Dr. Alina Dash", designation: "Faculty Advisor" }
+      { name: "Dr. Priyadarshi Tapas Ranjan Swain", designation: "Faculty Advisor" },
+      { name: "Mr. Amit Chatterjee", designation: "Faculty Advisor" }
     ]
   },
 
@@ -315,18 +315,18 @@ export const clubCoordinators: Record<string, ClubPeople> = {
   '16': {
     coordinators: [
       {
-        name: 'Ryota Inoue',
+        name: '',
         role: 'coordinator',
-        contact: 'ryota.inoue@vssut.ac.in',
+        contact: '',
       },
       {
-        name: 'Kana Takagi',
+        name: '',
         role: 'coordinator',
-        contact: 'kana.takagi@vssut.ac.in',
+        contact: '',
       },
     ],
     facultyAdvisors: [
-      { name: 'Prof. A. Pradhan', designation: 'Faculty Advisor' },
+      { name: '', designation: 'Faculty Advisor' },
     ],
   },
 }

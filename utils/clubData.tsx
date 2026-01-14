@@ -19,7 +19,7 @@ export const clubs: Club[] = [
     jpName: '謎の組織',
     description:
       'Enigma, the official web and coding club of VSSUT Burla, is a dynamic community of programmers, designers, and technology enthusiasts committed to nurturing innovation and problem solving skills. The club offers students practical exposure to diverse fields such as web and app development, game design, competitive programming, artificial intelligence, machine learning, cybersecurity, cloud computing and outreach domains.',
-    image: '/clubs/enigma.png',
+    image: '/clubs/enigma2.png',
     hanko: '暗',
     overlayChar: '謎',
   },
@@ -130,7 +130,7 @@ export const clubs: Club[] = [
     jpName: '芸術写真',
     description:
       'PIXELS is the official Art & Photography Club of VSSUT, Burla, dedicated to capturing creativity through lenses and strokes. The club serves as a vibrant platform for students to explore photography, cinematography, digital art, sketching, and visual storytelling. Through workshops, photowalks, exhibitions, competitions, and event coverage, PIXELS nurtures artistic expression and technical skills. United by a passion for visuals, the club documents campus life, celebrates moments, and transforms ideas into compelling art, making creativity a shared experience at VSSUT.',
-    image: '/clubs/Pixels.png',
+    image: '/clubs/Pixel2.png',
     hanko: '美',
     overlayChar: '写',
   },
@@ -154,15 +154,15 @@ export const clubs: Club[] = [
     hanko: '創',
     overlayChar: '想',
   },
-  {
-    id: '15',
-    name: 'EMOTICA',
-    jpName: '感情劇',
-    description: 'Mastering the art of dramatic expression.',
-    image: '/clubs/Emotica.jpeg',
-    hanko: '劇',
-    overlayChar: '演',
-  },
+  // {
+  //   id: '15',
+  //   name: 'EMOTICA',
+  //   jpName: '感情劇',
+  //   description: 'Mastering the art of dramatic expression.',
+  //   image: '/clubs/Emotica.jpeg',
+  //   hanko: '劇',
+  //   overlayChar: '演',
+  // },
   {
     id: '16',
     name: 'VEERRACING',
