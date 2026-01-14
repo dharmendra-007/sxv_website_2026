@@ -14,7 +14,7 @@ export default function Hero() {
     if (!heroText || !wordLeft || !wordRight || !separator) return;
 
     const CONTENT_EN = { left: "SAMAVESH", right: "VASSAUNT" };
-    const CONTENT_JP = { left: "サマヴェシュ", right: "ヴァサント" };
+    const CONTENT_JP = { left: "サマヴェシ", right: "ヴァサント" };
 
     // Show separator first
     setTimeout(() => {

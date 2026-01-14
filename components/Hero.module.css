@@ -1,6 +1,15 @@
-/* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Kosugi&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Teko:wght@300;400;500;600;700&display=swap');
+/* Shojumaru Font */
+@import url('https://fonts.googleapis.com/css2?family=Shojumaru&display=swap');
+
+/* ST Tokyo Font */
+@font-face {
+  font-family: 'ST Tokyo';
+  src: url('/fonts/STTokyo.woff2') format('woff2'),
+       url('/fonts/STTokyo.woff') format('woff');
+  font-display: swap;
+  font-weight: 400;
+  font-style: normal;
+}
 
 /* Yozakura Font */
 @font-face {
@@ -42,10 +51,10 @@
 }
 
 .subtitle {
-  font-family: 'Teko', 'Kosugi', serif;
-  font-size: clamp(0.8rem, 2vw, 1.2rem);
-  font-weight: 700;
-  letter-spacing: 0.3em;
+  font-family: 'Shojumaru', cursive;
+  font-size: clamp(0.65rem, 1.5vw, 0.85rem);
+  font-weight: 400;
+  letter-spacing: 0.5em;
   color: #ffffff;
   text-align: center;
   opacity: 0.8;
@@ -247,8 +256,8 @@
   }
 
   .subtitle {
-    font-size: clamp(0.7rem, 3vw, 1rem);
-    letter-spacing: 0.2em;
+    font-size: clamp(0.55rem, 2.5vw, 0.75rem);
+    letter-spacing: 0.3em;
     line-height: 1.4;
   }
 
