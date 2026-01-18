@@ -192,7 +192,7 @@ export const clubCoordinators: Record<string, ClubPeople> = {
           'https://www.linkedin.com/in/sai-priyadarshini-swain-18490a311?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app',
       },
       {
-        name: 'Sai Priyadarshini Swain',
+        name: 'Rudra Prasad Patra',
         role: 'coordinator',
         contact:
           'https://www.linkedin.com/in/rudra-prasad-patra-bb8953307?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app',

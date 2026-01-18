@@ -794,7 +794,7 @@ export default function PinnacleReveal() {
             {/* BACK FACE (REVEAL) */}
             <div className="layer-reveal">
               <img 
-                src="https://i.dailymail.co.uk/1s/2019/08/16/09/17349002-7360425-Interesting_childhood_Ash_explained_I_always_felt_my_life_was_ve-a-18_1565945120906.jpg" 
+                src="/ashking.jpg" 
                 alt="Guest Reveal" 
                 className="guest-image"
               />

@@ -19,20 +19,20 @@ const EVENTS_DATA = [
   },
   {
     id: 3,
-    title: "ROGUE RUNWAY",
-    image: "/home/rog6.png",
+    title: "BATTLEGROUND BLITZ",
+    image: "/paintball.jpeg",
     color: "#facc15" // Yellowish
   },
   {
     id: 4,
-    title: "COMING SOON",
-    image: "/cs2.png",
+    title: "NIMISHA DEB",
+    image: "/nimisha.jpeg",
     color: "#fb923c" // Orangeish
   },
   {
     id: 5,
-    title: "COMING SOON",
-    image: "/cs3.png",
+    title: "KULDEEP PATTNAIK",
+    image: "/kuldeep.jpg",
     color: "#60a5fa" // Blueish
   }
 ];
