@@ -14,6 +14,7 @@ type navItem = {
 const navItems: navItem[] = [
   { label: 'Home', href: '/', japanese: 'ホーム' },
   { label: 'Events', href: '/events', japanese: 'イベント' },
+  { label: 'Gallery', href: '/gallery', japanese: 'ギャラリー' },
   { label: 'Team', href: '/team', japanese: 'チーム' },
   { label: 'Committees', href: '/committees', japanese: '委員会' },
   { label: 'Contact Us', href: '/contactUs', japanese: 'お問い合わせ' },
