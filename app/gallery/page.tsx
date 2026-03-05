@@ -142,7 +142,7 @@ const GalleryPage = () => {
               <div className="absolute -inset-4 bg-rust-brown/20 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
               <div className="relative bg-blood-red/40 backdrop-blur-xl border border-shrine-red/20 px-20 py-10 rounded-[60px] hover:border-shrine-red/50 transition-colors">
                 <h3 className="text-5xl md:text-8xl font-black italic tracking-tighter text-rust-brown uppercase leading-none drop-shadow-2xl">
-                  The Fest is ON!
+                  Gallery!!
                 </h3>
               </div>
             </div>
