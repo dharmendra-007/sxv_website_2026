@@ -1,14 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Calendar, Sparkles, X as CloseIcon, ArrowRight, Heart } from 'lucide-react';
+import { Calendar, Sparkles, X as CloseIcon } from 'lucide-react';
 import Image from 'next/image';
 
 interface Photo {
   id: number;
   src: string;
-  title: string;
-  tag: string;
 }
 
 interface GalleryData {
@@ -24,31 +22,85 @@ const GalleryPage = () => {
     setMounted(true);
   }, []);
 
-  // Gallery data structure with tags
+  // Gallery data structure with actual images from public folders
   const galleryData: GalleryData = {
     1: [
-      { id: 1, src: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=2070&auto=format&fit=crop', title: 'Moonlight Shadows', tag: 'Aesthetics' },
-      { id: 2, src: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070&auto=format&fit=crop', title: 'Pulse of the Crowd', tag: 'Vibe' },
-      { id: 3, src: 'https://images.unsplash.com/photo-1514525253344-99a4299966c2?q=80&w=1974&auto=format&fit=crop', title: 'Techno Flora', tag: 'Exhibition' },
-      { id: 4, src: 'https://images.unsplash.com/photo-1545128485-c400e7702796?q=80&w=2070&auto=format&fit=crop', title: 'Digital Horizons', tag: 'Innovation' },
-      { id: 5, src: 'https://images.unsplash.com/photo-1459749411177-042180ce673c?q=80&w=2070&auto=format&fit=crop', title: 'Sonic Wavefront', tag: 'Music' },
-      { id: 6, src: 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=2070&auto=format&fit=crop', title: 'Tradition Rewired', tag: 'Culture' },
+      // Day 1 images
+      { id: 1, src: '/day 1/11.JPG' },
+      { id: 2, src: '/day 1/12.jpg' },
+      { id: 3, src: '/day 1/13.JPG' },
+      { id: 4, src: '/day 1/14.JPG' },
+      { id: 5, src: '/day 1/15.jpg' },
+      { id: 6, src: '/day 1/16.jpg' },
+      { id: 7, src: '/day 1/17.png' },
+      { id: 8, src: '/day 1/18.png' },
+      { id: 9, src: '/day 1/19.png' },
+      { id: 10, src: '/day 1/110.png' },
+      { id: 11, src: '/day 1/111.png' },
+      { id: 12, src: '/day 1/r1.JPG' },
+      { id: 13, src: '/day 1/r2.JPG' },
+      { id: 14, src: '/day 1/r3.JPG' },
+      { id: 15, src: '/day 1/r4.JPG' },
+      { id: 16, src: '/day 1/r5.JPG' },
+      { id: 17, src: '/day 1/r6.JPG' },
+      { id: 18, src: '/day 1/r7.JPG' },
+      { id: 19, src: '/day 1/r8.png' },
+      { id: 20, src: '/day 1/r9.png' },
+      { id: 21, src: '/day 1/r10.png' },
+      { id: 22, src: '/day 1/r11.png' },
+      { id: 23, src: '/day 1/r12.png' },
+      { id: 24, src: '/day 1/r13.png' },
+      { id: 25, src: '/day 1/r14.png' },
+      { id: 26, src: '/day 1/r15.png' },
+      { id: 27, src: '/day 1/r16.png' },
+      { id: 28, src: '/day 1/r17.png' },
+      { id: 29, src: '/day 1/r18.png' },
+      { id: 30, src: '/day 1/r19.png' },
     ],
     2: [
-      { id: 7, src: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=2070&auto=format&fit=crop', title: 'Iron Heart Beats', tag: 'Robotics' },
-      { id: 8, src: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop', title: 'Runway Glow', tag: 'Fashion' },
-      { id: 9, src: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop', title: 'Code & Soul', tag: 'Hackathon' },
-      { id: 10, src: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=2070&auto=format&fit=crop', title: 'Acoustic Whispers', tag: 'Theater' },
-      { id: 11, src: 'https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?q=80&w=2070&auto=format&fit=crop', title: 'Synth Dialogue', tag: 'Talks' },
-      { id: 12, src: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=2070&auto=format&fit=crop', title: 'Neon Fairground', tag: 'Carnival' },
+      // Day 2 images
+      { id: 31, src: '/day 2/21.JPG' },
+      { id: 32, src: '/day 2/22.JPG' },
+      { id: 33, src: '/day 2/23.jpg' },
+      { id: 34, src: '/day 2/24.jpg' },
+      { id: 35, src: '/day 2/25.JPG' },
+      { id: 36, src: '/day 2/26.jpg' },
+      { id: 37, src: '/day 2/27.JPG' },
+      { id: 38, src: '/day 2/28.JPG' },
+      { id: 39, src: '/day 2/29.JPG' },
+      { id: 40, src: '/day 2/210.JPG' },
+      { id: 41, src: '/day 2/211.JPG' },
+      { id: 42, src: '/day 2/212.jpg' },
+      { id: 43, src: '/day 2/213.jpg' },
+      { id: 44, src: '/day 2/214.jpg' },
+      { id: 45, src: '/day 2/215.JPG' },
     ],
     3: [
-      { id: 13, src: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=2070&auto=format&fit=crop', title: 'The Golden Hour', tag: 'Ceremony' },
-      { id: 14, src: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?q=80&w=2070&auto=format&fit=crop', title: 'Stardust Solo', tag: 'Rock' },
-      { id: 15, src: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?q=80&w=2070&auto=format&fit=crop', title: 'Eternal Echoes', tag: 'Finale' },
-      { id: 16, src: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=2070&auto=format&fit=crop', title: 'Nexus Point', tag: 'Connect' },
-      { id: 17, src: 'https://images.unsplash.com/photo-1574433237611-331666870a41?q=80&w=2072&auto=format&fit=crop', title: 'Hyper Bass', tag: 'EDM' },
-      { id: 18, src: 'https://images.unsplash.com/photo-1429962714451-bb934ecbb4ec?q=80&w=2070&auto=format&fit=crop', title: 'Lasting Light', tag: 'Outro' },
+      // Day 3 images
+      { id: 46, src: '/day 3/31.JPG' },
+      { id: 47, src: '/day 3/32.JPG' },
+      { id: 48, src: '/day 3/33.JPG' },
+      { id: 49, src: '/day 3/34.JPG' },
+      { id: 50, src: '/day 3/35.JPG' },
+      { id: 51, src: '/day 3/36.JPG' },
+      { id: 52, src: '/day 3/37.JPG' },
+      { id: 53, src: '/day 3/38.JPG' },
+      { id: 54, src: '/day 3/f1.JPG' },
+      { id: 55, src: '/day 3/f2.JPG' },
+      { id: 56, src: '/day 3/f3.JPG' },
+      { id: 57, src: '/day 3/f4.JPG' },
+      { id: 58, src: '/day 3/f5.JPG' },
+      { id: 59, src: '/day 3/f6.JPG' },
+      { id: 60, src: '/day 3/f7.JPG' },
+      { id: 61, src: '/day 3/f8.JPG' },
+      { id: 62, src: '/day 3/f9.JPG' },
+      { id: 63, src: '/day 3/m1.JPG' },
+      { id: 64, src: '/day 3/m2.JPG' },
+      { id: 65, src: '/day 3/m3.JPG' },
+      { id: 66, src: '/day 3/m4.JPG' },
+      { id: 67, src: '/day 3/m5.JPG' },
+      { id: 68, src: '/day 3/m6.JPG' },
+      { id: 69, src: '/day 3/m7.JPG' },
     ],
   };
 
@@ -208,37 +260,19 @@ const GalleryPage = () => {
               className="group relative cursor-pointer overflow-hidden rounded-[40px] bg-blood-red/20 border border-shrine-red/20 hover:border-shrine-red/50 transition-all duration-700 shadow-2xl animate-fade-in-up"
               style={{ animationDelay: `${index * 150}ms` }}
             >
-              <div className="relative w-full" style={{ paddingBottom: '125%' }}>
+              <div className="relative w-full min-h-[300px] flex items-center justify-center p-4">
                 <Image
                   src={photo.src}
-                  alt={photo.title}
-                  fill
-                  className="object-contain opacity-70 grayscale-[0.3] group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[1.5s] ease-out"
+                  alt={`Day ${activeDay} - Image ${photo.id}`}
+                  width={800}
+                  height={600}
+                  className="w-auto h-auto max-w-full max-h-[500px] object-contain opacity-70 grayscale-[0.3] group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[1.5s] ease-out"
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
               </div>
 
-              {/* Artistic Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-cyber-black via-cyber-black/10 to-transparent opacity-40 group-hover:opacity-100 transition-opacity duration-700"></div>
-
-              <div className="absolute inset-x-8 bottom-8 flex flex-col items-start translate-y-4 group-hover:translate-y-0 transition-transform duration-700">
-                <span className="px-4 py-1 bg-shrine-red text-[8px] font-black uppercase tracking-[0.3em] rounded-full mb-4 opacity-0 group-hover:opacity-100 transition-opacity delay-100">
-                  {photo.tag}
-                </span>
-                <h4 className="text-3xl font-black italic tracking-tighter uppercase mb-2 font-serif-jp">{photo.title}</h4>
-                <div className="flex items-center gap-2 text-rust-brown group-hover:text-shrine-red transition-colors">
-                  <span className="text-[10px] font-bold tracking-widest uppercase">View Memory</span>
-                  <ArrowRight
-                    size={14}
-                    className="-translate-x-2 group-hover:translate-x-0 opacity-0 group-hover:opacity-100 transition-all"
-                  />
-                </div>
-              </div>
-
-              {/* Pretty Floating Label */}
-              <div className="absolute top-8 right-8 w-10 h-10 border border-shrine-red/30 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-700 scale-50 group-hover:scale-100">
-                <Heart size={16} className="text-shrine-red" />
-              </div>
+              {/* Subtle Overlay on Hover */}
+              <div className="absolute inset-0 bg-gradient-to-t from-cyber-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
             </div>
           ))}
         </div>
@@ -255,7 +289,7 @@ const GalleryPage = () => {
 
       {/* Lightbox Modal */}
       {selectedImage && (
-        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6 lg:p-24 animate-fade-in">
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6 animate-fade-in">
           <div
             className="absolute inset-0 bg-cyber-black/98 backdrop-blur-3xl"
             onClick={() => setSelectedImage(null)}
@@ -268,48 +302,14 @@ const GalleryPage = () => {
             <CloseIcon size={24} />
           </button>
 
-          <div className="relative z-[1005] max-w-7xl w-full flex flex-col lg:flex-row items-center gap-16">
-            <div className="relative w-full lg:w-2/3 group flex items-center justify-center">
-              <Image
-                src={selectedImage.src}
-                alt={selectedImage.title}
-                width={1200}
-                height={1500}
-                className="w-auto h-auto max-w-full max-h-[80vh] object-contain rounded-[40px] shadow-[0_0_100px_rgba(166,24,24,0.3)] border border-shrine-red/20"
-              />
-              <div className="absolute -inset-10 bg-shrine-red/10 blur-[100px] -z-10 rounded-full"></div>
-            </div>
-
-            <div className="w-full lg:w-1/3 text-left">
-              <span className="text-shrine-red font-black tracking-[0.5em] uppercase text-xs mb-4 block">
-                Day {activeDay} Collection
-              </span>
-              <h5 className="text-6xl font-black italic uppercase tracking-tighter mb-8 leading-tight font-serif-jp">
-                {selectedImage.title}
-              </h5>
-              <p className="text-rust-brown text-sm leading-relaxed mb-12 font-medium">
-                A captured fragment from the Techno-Cultural Odyssey. This moment represents the synthesis of
-                human creativity and technical precision that defines our festival.
-              </p>
-              <div className="flex gap-8 border-t border-shrine-red/20 pt-12">
-                <div>
-                  <span className="text-[10px] text-rust-brown block mb-2 uppercase font-black tracking-widest">
-                    Metadata
-                  </span>
-                  <span className="text-paper-white text-xs font-bold uppercase tracking-widest">
-                    Frag. ID #{selectedImage.id}025
-                  </span>
-                </div>
-                <div>
-                  <span className="text-[10px] text-rust-brown block mb-2 uppercase font-black tracking-widest">
-                    Category
-                  </span>
-                  <span className="text-paper-white text-xs font-bold uppercase tracking-widest">
-                    {selectedImage.tag}
-                  </span>
-                </div>
-              </div>
-            </div>
+          <div className="relative z-[1005] max-w-[90vw] max-h-[90vh] flex items-center justify-center">
+            <Image
+              src={selectedImage.src}
+              alt={`Day ${activeDay} - Image ${selectedImage.id}`}
+              width={1920}
+              height={1080}
+              className="w-auto h-auto max-w-full max-h-[90vh] object-contain rounded-[20px] shadow-[0_0_100px_rgba(166,24,24,0.3)] border border-shrine-red/20"
+            />
           </div>
         </div>
       )}
