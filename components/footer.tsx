@@ -99,6 +99,13 @@ export default function Footer({ className = "" }: FooterProps) {
                 </Link>
               </li>
               <li className="group">
+                <Link href="/gallery" className="flex items-center text-gray-500 hover:text-white transition-colors">
+                  <span className="w-0 group-hover:w-4 h-[1px] bg-[var(--shrine-red)] mr-0 group-hover:mr-2 transition-all duration-300"></span>
+                  <span className="font-['Shojumaru'] text-sm text-[var(--rust-brown)] mr-2 group-hover:text-[var(--shrine-red)] transition-colors">画廊</span>
+                  Gallery
+                </Link>
+              </li>
+              <li className="group">
                 <Link href="/committees" className="flex items-center text-gray-500 hover:text-white transition-colors">
                   <span className="w-0 group-hover:w-4 h-[1px] bg-[var(--shrine-red)] mr-0 group-hover:mr-2 transition-all duration-300"></span>
                   <span className="font-['Shojumaru'] text-sm text-[var(--rust-brown)] mr-2 group-hover:text-[var(--shrine-red)] transition-colors">部門</span>
